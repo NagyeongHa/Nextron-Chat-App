@@ -1,24 +1,106 @@
-import React from "react";
-
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import Link from "next/link";
+import { useRouter } from "next/router";
+import React, { useState } from "react";
+import InputGroup from "../components/InputGroup";
+import { auth } from "../firebase";
 const Signup = () => {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [nameError, setNameError] = useState("");
+  const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+
+  const router = useRouter();
+
+  const handleSignUp = async () => {
+    if (!name.trim().length) {
+      setNameError("이름을 입력해 주세요.");
+      return;
+    }
+    setNameError("");
+
+    if (!email.trim().length) {
+      setEmailError("이메일을 입력해 주세요.");
+      return;
+    }
+    setEmailError("");
+
+    if (!password.trim().length) {
+      setPasswordError("비밀번호를 입력해 주세요.");
+      return;
+    }
+    setPasswordError("");
+
+    try {
+      const createdUser = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+
+      router.push("/login");
+      console.log(createdUser.user);
+    } catch (error) {
+      console.log(error.code);
+
+      switch (error.code) {
+        case "auth/email-already-in-use":
+          return setEmailError("이미 가입된 계정입니다.");
+        case "auth/weak-password":
+          return setPasswordError("6자 이상 입력해주세요.");
+        case "auth/missing-email":
+          return setEmailError("이메일을 입력해 주세요,");
+        case "auth/invalid-email":
+          return setEmailError("이메일 형식이 아닙니다.");
+        default:
+          return setNameError(""), setPasswordError(""), setEmailError("");
+      }
+    }
+  };
   return (
-    <div>
+    <div className='flex flex-col justify-center items-center h-screen'>
       <div className='text-2xl'>signup</div>
-      <form>
+      <div className='w-5/12'>
         <div>
-          <div>이름</div>
-          <input className='border rounded' type='text' />
+          <p>이름</p>
+          <InputGroup
+            type='text'
+            value={name}
+            setValue={setName}
+            error={nameError}
+          />
         </div>
         <div>
-          <div>아이디</div>
-          <input className='border rounded' type='text' />
+          <p>이메일</p>
+          <InputGroup
+            type='text'
+            value={email}
+            setValue={setEmail}
+            error={emailError}
+          />
         </div>
         <div>
-          <div>비밀번호</div>
-          <input className='border rounded' type='text' />
+          <p>비밀번호</p>
+          <InputGroup
+            type='password'
+            value={password}
+            setValue={setPassword}
+            error={passwordError}
+          />
         </div>
-        <button className='bg-gray-700 text-white'>회원가입</button>
-      </form>
+        <button
+          className='bg-gray-700 text-white w-full p-2'
+          onClick={handleSignUp}
+        >
+          회원가입
+        </button>
+      </div>
+
+      <Link href='/login' className='font-bold'>
+        이미 계정이 있으신가요? 로그인하기
+      </Link>
     </div>
   );
 };
