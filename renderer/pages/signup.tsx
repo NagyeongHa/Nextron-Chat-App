@@ -1,9 +1,10 @@
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+import { doc, setDoc } from "firebase/firestore";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
 import InputGroup from "../components/InputGroup";
-import { auth } from "../firebase";
+import { auth, db } from "../firebase";
 const Signup = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -34,14 +35,21 @@ const Signup = () => {
     setPasswordError("");
 
     try {
-      const createdUser = await createUserWithEmailAndPassword(
+      const create = await createUserWithEmailAndPassword(
         auth,
         email,
         password
       );
+      const user = create.user;
+      const profileImageUrl = `https://avatars.dicebear.com/api/big-ears-neutral/${user.email}.svg`;
+
+      if (user) {
+        updateUserInfo(user, profileImageUrl);
+        saveUser(user, profileImageUrl);
+      }
 
       router.push("/login");
-      console.log(createdUser.user);
+      console.log(create.user);
     } catch (error) {
       console.log(error.code);
 
@@ -59,6 +67,27 @@ const Signup = () => {
       }
     }
   };
+
+  const updateUserInfo = async (user, profileImageUrl) => {
+    try {
+      await updateProfile(user, {
+        photoURL: profileImageUrl,
+        displayName: name,
+      });
+    } catch (error) {
+      console.log(error);
+      new Error("사용자 정보를 업데이트 하지못했습니다");
+    }
+  };
+
+  const saveUser = async (user, profileImageUrl) => {
+    await setDoc(doc(db, "users", user.uid), {
+      name,
+      email,
+      profileimage: profileImageUrl,
+    });
+  };
+
   return (
     <div className='flex flex-col justify-center items-center h-screen'>
       <div className='text-2xl'>signup</div>
