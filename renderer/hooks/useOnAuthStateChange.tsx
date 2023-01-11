@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+import { onAuthStateChanged } from "firebase/auth";
+import { useEffect, useState } from "react";
 import { auth } from "../firebase";
 
 interface UserInfo {
@@ -13,7 +14,7 @@ const useOnAuthStateChange = () => {
   });
 
   useEffect(() => {
-    auth.onAuthStateChanged(user => {
+    onAuthStateChanged(auth, user => {
       if (user) {
         setUserInfo({
           name: user.displayName,
