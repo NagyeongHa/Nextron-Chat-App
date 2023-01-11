@@ -16,19 +16,19 @@ const Signup = () => {
   const router = useRouter();
 
   const handleSignUp = async () => {
-    if (!name.trim().length) {
+    if (!name.trim()) {
       setNameError("이름을 입력해 주세요.");
       return;
     }
     setNameError("");
 
-    if (!email.trim().length) {
+    if (!email.trim()) {
       setEmailError("이메일을 입력해 주세요.");
       return;
     }
     setEmailError("");
 
-    if (!password.trim().length) {
+    if (!password.trim()) {
       setPasswordError("비밀번호를 입력해 주세요.");
       return;
     }
@@ -44,8 +44,8 @@ const Signup = () => {
       const profileImageUrl = `https://avatars.dicebear.com/api/big-ears-neutral/${user.email}.svg`;
 
       if (user) {
-        updateUserInfo(user, profileImageUrl);
-        saveUser(user, profileImageUrl);
+        await updateUserInfo(user, profileImageUrl);
+        await saveUser(user, profileImageUrl);
       }
 
       router.push("/login");

@@ -1,4 +1,8 @@
-import { signInWithEmailAndPassword } from "firebase/auth";
+import {
+  browserLocalPersistence,
+  setPersistence,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { FormEvent, useState } from "react";
@@ -11,7 +15,7 @@ const Login = () => {
   const [errors, setErrors] = useState({ email: "", password: "" });
   const router = useRouter();
 
-  const handleLogin = async (e: FormEvent) => {
+  const handleLogin = (e: FormEvent) => {
     e.preventDefault();
 
     if (!email.trim().length || !password.trim().length) {
@@ -21,28 +25,43 @@ const Login = () => {
       });
     }
 
-    try {
-      const login = await signInWithEmailAndPassword(auth, email, password);
-      const user = login.user;
-      router.push("/home");
-      console.log(user);
-    } catch (error) {
-      console.log(error.code);
-      switch (error.code) {
-        case "auth/wrong-password":
-          return setErrors({
-            email: "",
-            password: "아이디와 비밀번호가 일치하지 않습니다.",
-          });
-        case "auth/user-not-found":
-          return setErrors({ email: "", password: "가입된 계정이 아닙니다." });
-        case "auth/invalid-email":
-          return setErrors({ email: "이메일 형식이 아닙니다.", password: "" });
-        default:
-          return setErrors({ email: "", password: "" });
-      }
-    }
+    setPersistence(auth, browserLocalPersistence)
+      .then(() => {
+        return signInWithEmailAndPassword(auth, email, password).then(() =>
+          router.push("/home")
+        );
+      })
+      .catch(error => {
+        // await setPersistence(auth, browserLocalPersistence);
+        // const login = await signInWithEmailAndPassword(auth, email, password);
+        // const user = login.user;
+
+        // router.push("/home");
+        // console.log(user);
+
+        console.log(error.code);
+        switch (error.code) {
+          case "auth/wrong-password":
+            return setErrors({
+              email: "",
+              password: "아이디와 비밀번호가 일치하지 않습니다.",
+            });
+          case "auth/user-not-found":
+            return setErrors({
+              email: "",
+              password: "가입된 계정이 아닙니다.",
+            });
+          case "auth/invalid-email":
+            return setErrors({
+              email: "이메일 형식이 아닙니다.",
+              password: "",
+            });
+          default:
+            return setErrors({ email: "", password: "" });
+        }
+      });
   };
+
   return (
     <div className='flex flex-col justify-center items-center h-screen'>
       <div className='text-2xl'>Login</div>
