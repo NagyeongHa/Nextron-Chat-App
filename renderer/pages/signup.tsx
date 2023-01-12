@@ -41,11 +41,11 @@ const Signup = () => {
         password
       );
       const user = create.user;
-      const profileImageUrl = `https://avatars.dicebear.com/api/big-ears-neutral/${user.email}.svg`;
+      const photoURL = `https://avatars.dicebear.com/api/big-ears-neutral/${user.email}.svg`;
 
       if (user) {
-        await updateUserInfo(user, profileImageUrl);
-        await saveUser(user, profileImageUrl);
+        await updateUserInfo(user, photoURL);
+        await saveUser(user, photoURL);
       }
 
       router.push("/login");
@@ -68,10 +68,10 @@ const Signup = () => {
     }
   };
 
-  const updateUserInfo = async (user, profileImageUrl) => {
+  const updateUserInfo = async (user, photoURL) => {
     try {
       await updateProfile(user, {
-        photoURL: profileImageUrl,
+        photoURL,
         displayName: name,
       });
     } catch (error) {
@@ -80,11 +80,12 @@ const Signup = () => {
     }
   };
 
-  const saveUser = async (user, profileImageUrl) => {
+  const saveUser = async (user, photoURL) => {
     await setDoc(doc(db, "users", user.uid), {
-      name,
+      displayName: name,
       email,
-      profileimage: profileImageUrl,
+      uid: user.uid,
+      photoURL: photoURL,
     });
   };
 

@@ -1,24 +1,25 @@
 import { onAuthStateChanged } from "firebase/auth";
 import { useEffect, useState } from "react";
 import { auth } from "../firebase";
+import { UserInfo } from "../types/UserInfo";
 
-interface UserInfo {
-  name: string;
-  profileImage: string;
-}
 const useOnAuthStateChange = () => {
   const [isLoggedin, setIsLoggedin] = useState(false);
   const [userInfo, setUserInfo] = useState<UserInfo>({
-    name: "",
-    profileImage: "",
+    uid: "",
+    email: "",
+    photoURL: "",
+    displayName: "",
   });
 
   useEffect(() => {
     onAuthStateChanged(auth, user => {
       if (user) {
         setUserInfo({
-          name: user.displayName,
-          profileImage: user.photoURL,
+          uid: user.uid,
+          email: user.email,
+          photoURL: user.photoURL,
+          displayName: user.displayName,
         });
         return setIsLoggedin(true);
       }
