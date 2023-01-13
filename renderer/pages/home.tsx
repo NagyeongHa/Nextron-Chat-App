@@ -1,39 +1,30 @@
 import React, { useEffect, useState } from "react";
 import Head from "next/head";
-import useOnAuthStateChange from "../hooks/useOnAuthStateChange";
 import Title from "../components/Title";
-import { collection, getDocs, query, where } from "firebase/firestore";
-import { db } from "../firebase";
 import Image from "next/image";
 import Link from "next/link";
+import { getUsersCollection } from "../utils/firebase";
+import { useAuth } from "../context/Auth";
 
 function Home() {
-  const onAuthState = useOnAuthStateChange();
-  const { userInfo } = onAuthState;
+  const { user } = useAuth();
   const [userList, setUserList] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  const getUsers = async () => {
-    const usersRef = collection(db, "users");
-    const q = await query(usersRef, where("email", "!=", `${userInfo.email}`));
-    const data = await getDocs(q);
-    const users = data.docs.map(doc => doc.data());
-    console.log(userInfo);
-    console.log("===============", users);
-
-    setUserList(users);
-    setIsLoading(false);
-  };
-
+  //유저목록 가져오기
   useEffect(() => {
+    const getUsers = async () => {
+      const users = await getUsersCollection(user.email);
+      setUserList(users);
+      setIsLoading(false);
+    };
+
     getUsers();
 
     return () => {
       getUsers();
     };
   }, [isLoading]);
-
-  console.log(userList);
 
   return (
     <>
@@ -44,9 +35,9 @@ function Home() {
       <Title title='유저 목록' />
       {!isLoading &&
         userList.map(user => (
-          <>
+          <div key={user.email}>
             <Link href={`/chat/${[user.uid]}`}>
-              <div className='cursor-pointer' key={user.email}>
+              <div className='cursor-pointer'>
                 <Image
                   className='rounded-2xl'
                   src={user.photoURL}
@@ -54,9 +45,10 @@ function Home() {
                   height={50}
                 ></Image>
                 {user.displayName}
+                {user.uid}
               </div>
             </Link>
-          </>
+          </div>
         ))}
     </>
   );

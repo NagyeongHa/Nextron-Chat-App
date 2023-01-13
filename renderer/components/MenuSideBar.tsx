@@ -1,12 +1,11 @@
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
-import useOnAuthStateChange from "../hooks/useOnAuthStateChange";
+import { useAuth } from "../context/Auth";
 
 const MenuSideBar = () => {
-  const onAuth = useOnAuthStateChange();
-  const { userInfo } = onAuth;
-  const { displayName, photoURL } = userInfo;
+  const { user } = useAuth();
+  const { displayName, photoURL } = user;
 
   return (
     <>

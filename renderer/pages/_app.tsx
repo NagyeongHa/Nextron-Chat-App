@@ -3,13 +3,28 @@ import type { AppProps } from "next/app";
 
 import "../styles/globals.css";
 import Layout from "../components/Layout";
+import { AuthProvider } from "../context/Auth";
+import AuthedRoute from "../context/AuthedRoute";
+import { useRouter } from "next/router";
 
 function MyApp({ Component, pageProps }: AppProps) {
+  const { pathname } = useRouter();
+  const authRoutes = ["/signup", "/login"];
+  const authRoute = authRoutes.includes(pathname);
+
   return (
     <>
-      <Layout>
-        <Component {...pageProps} />
-      </Layout>
+      <AuthProvider>
+        {authRoute ? (
+          <Component {...pageProps} />
+        ) : (
+          <AuthedRoute>
+            <Layout>
+              <Component {...pageProps} />
+            </Layout>
+          </AuthedRoute>
+        )}
+      </AuthProvider>
     </>
   );
 }

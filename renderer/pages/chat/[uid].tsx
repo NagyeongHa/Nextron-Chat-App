@@ -1,13 +1,37 @@
-import { DocumentData, serverTimestamp } from "firebase/firestore";
+import {
+  addDoc,
+  collection,
+  DocumentData,
+  FieldValue,
+  serverTimestamp,
+} from "firebase/firestore";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
-import useOnAuthStateChange from "../../hooks/useOnAuthStateChange";
+import Title from "../../components/Title";
+import { useAuth } from "../../context/Auth";
+import { db } from "../../firebase";
 import { callGetDoc, callSaveDoc } from "../../utils/firebase";
+interface ChatRoom {
+  [x: string]: {
+    user: {
+      uid: string;
+      displayName: string;
+      photoURL: string;
+    };
+    date: FieldValue;
+    lastMessage: string;
+  };
+}
 
 const Chat = () => {
   const [message, setMessage] = useState("");
-  const onAuth = useOnAuthStateChange();
-  const { uid: currentUid } = onAuth.userInfo;
+  const { user } = useAuth();
+  const {
+    uid: currentUid,
+    // photoURL: currentPhotoURL,
+    displayName: currentDisplayName,
+  } = user;
+
   const [chatUser, setChatUser] = useState<DocumentData>({
     email: "",
     uid: "",
@@ -28,11 +52,12 @@ const Chat = () => {
     getChatUser();
   }, []);
 
-  //메세지 작성
+  //메시지 전송
   const writeMessage = async e => {
     e.preventDefault();
 
-    const data = {
+    //채팅목록에서 보이는 마지막 메시지 업데이트
+    const chatRoomData: ChatRoom = {
       [chatUser.uid]: {
         user: {
           uid: chatUser.uid,
@@ -44,13 +69,34 @@ const Chat = () => {
       },
     };
 
-    callSaveDoc("chat room", currentUid, data);
+    //메시지
+    const chatMessageData = {
+      displayName: currentDisplayName,
+      date: serverTimestamp(),
+      message: message,
+    };
+
+    const mixedUid =
+      currentUid > chatUser.uid
+        ? currentUid + chatUser.uid
+        : chatUser.uid + currentUid;
+
+    // const chatRoomRef = doc(db, "chat rooms", currentUid);
+    // await setDoc(chatRoomRef, chatRoomData);
+
+    const chatMessageRef = collection(db, `message-${mixedUid}`);
+
+    await callSaveDoc("chat rooms", currentUid, chatRoomData);
+    const test = await addDoc(chatMessageRef, chatMessageData);
+    console.log(test.id);
+
+    setMessage("");
   };
 
   return (
     <div className='flex flex-col justify-between h-full p-3'>
-      상대의 uid -{uid}
-      {chatUser.displayName}
+      <Title title={chatUser.displayName} />
+
       <form onSubmit={writeMessage}>
         <textarea
           className='w-4/5'

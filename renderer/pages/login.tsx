@@ -18,7 +18,7 @@ const Login = () => {
   const handleLogin = (e: FormEvent) => {
     e.preventDefault();
 
-    if (!email.trim().length || !password.trim().length) {
+    if (!email.trim() || !password.trim()) {
       return setErrors({
         email: "",
         password: "이메일과 비밀번호를 입력해 주세요.",
@@ -32,13 +32,6 @@ const Login = () => {
         );
       })
       .catch(error => {
-        // await setPersistence(auth, browserLocalPersistence);
-        // const login = await signInWithEmailAndPassword(auth, email, password);
-        // const user = login.user;
-
-        // router.push("/home");
-        // console.log(user);
-
         console.log(error.code);
         switch (error.code) {
           case "auth/wrong-password":

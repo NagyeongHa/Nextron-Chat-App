@@ -1,8 +1,7 @@
 import { useRouter } from "next/router";
-import React, { ReactNode } from "react";
+import React from "react";
+import { Children } from "../types/Children";
 import MenuSideBar from "./MenuSideBar";
-
-export type Children = { children: ReactNode };
 
 const Layout = ({ children }: Children) => {
   const { pathname } = useRouter();
