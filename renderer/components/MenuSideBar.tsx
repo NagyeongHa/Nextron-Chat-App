@@ -4,9 +4,12 @@ import React from "react";
 import { useAuth } from "../context/Auth";
 
 const MenuSideBar = () => {
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
   const { displayName, photoURL } = user;
 
+  const handleLogout = () => {
+    logout();
+  };
   return (
     <>
       <div className='w-64 h-screen bg-slate-600 text-white inline-block'>
@@ -25,7 +28,7 @@ const MenuSideBar = () => {
           <div className='hover:bg-gray-400 focus:bg-gray-400'>친구</div>
         </Link>
         <hr />
-        <Link href='/chat'>
+        <Link href='/chatlist'>
           <div className='hover:bg-gray-400 focus:bg-gray-400'>채팅</div>
         </Link>
         <hr />
@@ -34,12 +37,18 @@ const MenuSideBar = () => {
         </Link>
 
         <hr />
-        <Link href='/signup'>
-          <button className='btn-blue'>회원가입</button>
-        </Link>
-        <Link href='/login'>
-          <button className='btn-blue'>로그인</button>
-        </Link>
+        {!user ? (
+          <>
+            <Link href='/signup'>
+              <button className='btn-blue'>회원가입</button>
+            </Link>
+            <Link href='/login'>
+              <button className='btn-blue'>로그인</button>
+            </Link>
+          </>
+        ) : (
+          <button onClick={handleLogout}>logout</button>
+        )}
       </div>
     </>
   );

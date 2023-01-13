@@ -17,18 +17,6 @@ import { db } from "../firebase";
 //   };
 // }
 
-// const initial = {
-//   lastMessage: "",
-//   date: {
-//     seconds: 0,
-//     nanoseconds: 0,
-//   },
-//   user: {
-//     displayName: "",
-//     photoURL: "",
-//     uid: "",
-//   },
-// };
 const Chat = () => {
   const { user } = useAuth();
   const { uid } = user;
@@ -57,7 +45,7 @@ const Chat = () => {
       <Title title='채팅' />
       <div>
         {!isLoading &&
-          chatRoomList.map(item => (
+          Object.values(chatRoomList).map(item => (
             <ChatRoomItem key={item.user.uid} chatRoom={item} />
           ))}
       </div>
