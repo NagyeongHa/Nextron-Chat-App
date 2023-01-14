@@ -7,6 +7,6 @@ module.exports = {
     return config;
   },
   images: {
-    domains: ["avatars.dicebear.com"],
+    domains: ["api.dicebear.com", "avatars.dicebear.com"],
   },
 };

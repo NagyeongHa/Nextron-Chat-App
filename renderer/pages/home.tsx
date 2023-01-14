@@ -24,7 +24,9 @@ function Home() {
     return () => {
       getUsers();
     };
-  }, [isLoading]);
+  }, [user]);
+
+  console.log(user);
 
   return (
     <>
@@ -35,17 +37,16 @@ function Home() {
       <Title title='유저 목록' />
       {!isLoading &&
         userList.map(user => (
-          <div key={user.email}>
+          <div key={user.email} className='px-8 py-4  hover:bg-red-50'>
             <Link href={`/chat/${[user.uid]}`}>
-              <div className='cursor-pointer'>
+              <div className='cursor-pointer flex flex-row items-center'>
                 <Image
-                  className='rounded-2xl'
+                  className='photoURL'
                   src={user.photoURL}
                   width={50}
                   height={50}
                 ></Image>
-                {user.displayName}
-                {user.uid}
+                <span className='ml-3'>{user.displayName}</span>
               </div>
             </Link>
           </div>
@@ -55,3 +56,12 @@ function Home() {
 }
 
 export default Home;
+
+// export async function getServerSideProps() {
+//   const { user } = useAuth();
+//   const users = await getUsersCollection(user.email);
+
+//   return {
+//     props: { user: users },
+//   };
+// }

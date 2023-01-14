@@ -2,6 +2,9 @@ import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 import { useAuth } from "../context/Auth";
+import { AiFillHome } from "react-icons/ai";
+import { BsFillChatFill } from "react-icons/bs";
+import { HiChatAlt2 } from "react-icons/hi";
 
 const MenuSideBar = () => {
   const { user, logout } = useAuth();
@@ -12,43 +15,48 @@ const MenuSideBar = () => {
   };
   return (
     <>
-      <div className='w-64 h-screen bg-slate-600 text-white inline-block'>
-        {photoURL && (
-          <Image
-            src={photoURL}
-            width={55}
-            height={55}
-            className='p-3 rounded-full'
-            alt='propfileImage'
-          />
-        )}
-        <span>{displayName}</span>
-        <hr />
-        <Link href='/home'>
-          <div className='hover:bg-gray-400 focus:bg-gray-400'>친구</div>
-        </Link>
-        <hr />
-        <Link href='/chatlist'>
-          <div className='hover:bg-gray-400 focus:bg-gray-400'>채팅</div>
-        </Link>
-        <hr />
-        <Link href='/groupchat'>
-          <div className='hover:bg-gray-400 focus:bg-gray-400'>그룹채팅</div>
-        </Link>
+      <div className='w-28 h-screen  bg-gray-100  flex flex-col items-center justify-between text-center'>
+        <div>
+          <Link href='/home'>
+            <div className='p-3 m-3 mt-7  hover:bg-red-400 rounded-[10px]  hover:text-white text-[#c5c5c5]'>
+              <a>
+                <AiFillHome size='1.8rem' className='inline-block  ' />
+              </a>
+            </div>
+          </Link>
+          <Link href='/chatlist'>
+            <div className='p-3 m-3 hover:bg-red-400 rounded-[10px]  hover:text-white text-[#c5c5c5] '>
+              <a>
+                <BsFillChatFill size='1.7rem' className='inline-block  ' />
+              </a>
+            </div>
+          </Link>
 
-        <hr />
-        {!user ? (
-          <>
-            <Link href='/signup'>
-              <button className='btn-blue'>회원가입</button>
-            </Link>
-            <Link href='/login'>
-              <button className='btn-blue'>로그인</button>
-            </Link>
-          </>
-        ) : (
-          <button onClick={handleLogout}>logout</button>
-        )}
+          <Link href='/groupchat'>
+            <div className='p-3 m-3 hover:bg-red-400 rounded-[10px] hover:text-white text-[#c5c5c5]'>
+              <a>
+                <HiChatAlt2 size='2.2rem' className='inline-block  ' />
+              </a>
+            </div>
+          </Link>
+        </div>
+        <div>
+          <div>
+            {photoURL && (
+              <Image
+                src={photoURL}
+                width={55}
+                height={55}
+                className='photoURL'
+                alt='propfileImage'
+              />
+            )}
+          </div>
+
+          <button className='mb-6' onClick={handleLogout}>
+            logout
+          </button>
+        </div>
       </div>
     </>
   );

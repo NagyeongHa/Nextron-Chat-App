@@ -4,9 +4,9 @@ import MenuSideBar from "./MenuSideBar";
 
 const Layout = ({ children }: Children) => {
   return (
-    <div className='w-full h-screen flex flex-row'>
+    <div className='w-full h-screen flex flex-row bg-white'>
       <MenuSideBar />
-      <div className=' w-full'>{children}</div>
+      <div className=' w-full bg-white'>{children}</div>
     </div>
   );
 };
