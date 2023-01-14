@@ -24,7 +24,7 @@ const ChatRoomItem = ({ chatRoom }: ChatRoomProp) => {
   return (
     <Link href={`/chat/${uid}`}>
       <div className='flex flex-row bg-gray-200 justify-between cursor-pointer'>
-        <Image src={photoURL} width={55} height={55} />
+        {photoURL && <Image src={photoURL} width={55} height={55} />}
         <div className='flex flex-col w-full'>
           <span>{displayName}</span>
           <span>{lastMessage}</span>

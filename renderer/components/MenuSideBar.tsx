@@ -15,19 +15,19 @@ const MenuSideBar = () => {
   };
   return (
     <>
-      <div className='w-28 h-screen  bg-gray-100  flex flex-col items-center justify-between text-center'>
+      <div className='w-28 h-screen bg-gray-100  flex flex-col items-center justify-between text-center'>
         <div>
           <Link href='/home'>
             <div className='p-3 m-3 mt-7  hover:bg-red-400 rounded-[10px]  hover:text-white text-[#c5c5c5]'>
               <a>
-                <AiFillHome size='1.8rem' className='inline-block  ' />
+                <AiFillHome size='1.8rem' className='inline-block' />
               </a>
             </div>
           </Link>
           <Link href='/chatlist'>
             <div className='p-3 m-3 hover:bg-red-400 rounded-[10px]  hover:text-white text-[#c5c5c5] '>
               <a>
-                <BsFillChatFill size='1.7rem' className='inline-block  ' />
+                <BsFillChatFill size='1.7rem' className='inline-block' />
               </a>
             </div>
           </Link>
@@ -35,7 +35,7 @@ const MenuSideBar = () => {
           <Link href='/groupchat'>
             <div className='p-3 m-3 hover:bg-red-400 rounded-[10px] hover:text-white text-[#c5c5c5]'>
               <a>
-                <HiChatAlt2 size='2.2rem' className='inline-block  ' />
+                <HiChatAlt2 size='2.2rem' className='inline-block' />
               </a>
             </div>
           </Link>

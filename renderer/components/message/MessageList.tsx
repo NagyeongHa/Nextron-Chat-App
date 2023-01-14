@@ -24,7 +24,7 @@ const Messages = () => {
   useEffect(() => {
     const getMessageList = async () => {
       const messageRef = collection(db, `message-${mixedUid}`);
-      const q = query(messageRef, orderBy("date", "desc"));
+      const q = query(messageRef, orderBy("date", "asc"));
       onSnapshot(q, querySnapshot => {
         const message = [];
         querySnapshot.forEach(doc => {
@@ -40,10 +40,10 @@ const Messages = () => {
   }, []);
 
   return (
-    <div>
+    <div className='overflow-y-scroll'>
       {!isLoading &&
         Object.values(messageList).map(item => (
-          <MessageItem key={item.date} message={item} />
+          <MessageItem key={item.date} messages={item} />
         ))}
     </div>
   );

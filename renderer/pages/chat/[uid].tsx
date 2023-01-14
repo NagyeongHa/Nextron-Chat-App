@@ -7,12 +7,13 @@ import {
 } from "firebase/firestore";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
-import Messages from "../../components/message/Messages";
+import Messages from "../../components/message/MessageList";
 
 import Title from "../../components/Title";
 import { useAuth } from "../../context/Auth";
 import { db } from "../../firebase";
 import { callGetDoc, callSaveDoc } from "../../utils/firebase";
+import { IoMdSend } from "react-icons/io";
 interface ChatRoom {
   [x: string]: {
     user: {
@@ -96,15 +97,10 @@ const Chat = () => {
       message: message,
     };
 
-    // const chatRoomRef = doc(db, "chat rooms", currentUid);
-    // await setDoc(chatRoomRef, chatRoomData);
-
     const chatMessageRef = collection(db, `message-${mixedUid}`);
-
     await callSaveDoc("chat rooms", currentUid, currentUserChatRoomData);
     await callSaveDoc("chat rooms", chatUser.uid, chatUserChatRoomData);
-    const test = await addDoc(chatMessageRef, chatMessageData);
-    console.log(test.id);
+    await addDoc(chatMessageRef, chatMessageData);
 
     setMessage("");
   };
@@ -112,15 +108,22 @@ const Chat = () => {
   return (
     <div className='flex flex-col justify-between h-full p-3'>
       <Title title={`${chatUser.displayName} - ${chatUser.uid}`} />
-
+      <Messages />
       <form onSubmit={sendMessage}>
-        <Messages />
-        <textarea
-          className='w-4/5'
-          onChange={e => setMessage(e.target.value)}
-          value={message}
-        />
-        <button>전송</button>
+        <div className='relative w-full h-full'>
+          <textarea
+            className='w-full relative  border resize-none rounded-md mb-1'
+            onChange={e => setMessage(e.target.value)}
+            value={message}
+            rows={3}
+          />
+          <button>
+            <IoMdSend
+              size={28}
+              className='absolute inline-block p-1 left-[89rem] bottom-[1rem]'
+            />
+          </button>
+        </div>
       </form>
     </div>
   );

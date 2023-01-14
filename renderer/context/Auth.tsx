@@ -4,6 +4,7 @@ import {
   signInWithEmailAndPassword,
   UserCredential,
 } from "firebase/auth";
+import { useRouter } from "next/router";
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { auth } from "../firebase";
 import { Children } from "../types/Children";
@@ -27,6 +28,7 @@ const AuthContext = createContext<AuthContext>({
 export const AuthProvider = ({ children }: Children) => {
   const [isLoading, setIsLoading] = useState(true);
   const [user, setUser] = useState<UserInfo>(null);
+  const router = useRouter();
 
   useEffect(() => {
     const listener = onAuthStateChanged(auth, user => {

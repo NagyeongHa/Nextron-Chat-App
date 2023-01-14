@@ -17,7 +17,7 @@ import { db } from "../firebase";
 //   };
 // }
 
-const Chat = () => {
+const ChatList = () => {
   const { user } = useAuth();
   const { uid } = user;
   const [chatRoomList, setChatRoomList] = useState<DocumentData>([]);
@@ -53,4 +53,4 @@ const Chat = () => {
   );
 };
 
-export default Chat;
+export default ChatList;

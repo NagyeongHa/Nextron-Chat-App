@@ -1,7 +1,8 @@
 import { FieldValue } from "firebase/firestore";
 
 export interface Message {
-  date: FieldValue;
+  date: { seconds: number };
   displayName: string;
   message: string;
+  photoURL: string;
 }

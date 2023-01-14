@@ -3,7 +3,8 @@ import { doc, setDoc } from "firebase/firestore";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
-import InputGroup from "../components/InputGroup";
+import InputGroup from "../components/TextInput";
+import { useAuth } from "../context/Auth";
 import { auth, db } from "../firebase";
 const Signup = () => {
   const [name, setName] = useState("");
@@ -14,6 +15,7 @@ const Signup = () => {
   const [passwordError, setPasswordError] = useState("");
 
   const router = useRouter();
+  const { signUp } = useAuth();
 
   const handleSignUp = async () => {
     if (!name.trim()) {
@@ -35,11 +37,7 @@ const Signup = () => {
     setPasswordError("");
 
     try {
-      const create = await createUserWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
+      const create = await signUp(email, password);
       const user = create.user;
       const photoURL = `https://avatars.dicebear.com/api/big-ears-neutral/${user.email}.svg`;
 

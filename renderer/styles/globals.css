@@ -12,10 +12,12 @@
   .btn-blue {
     @apply text-white font-bold px-4 py-2 rounded bg-blue-600 hover:bg-blue-500;
   }
-}
 
-@layer components {
   .photoURL {
     @apply p-3 rounded-2xl;
+  }
+
+  .roundedInput {
+    @apply border rounded p-3 w-full;
   }
 }

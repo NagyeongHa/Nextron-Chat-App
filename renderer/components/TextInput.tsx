@@ -1,35 +1,37 @@
-import React, { ChangeEvent } from "react";
+import React, { ChangeEvent, useCallback } from "react";
 
 interface InputProp {
   type: string;
   value: string;
+  error?: string;
+  className?: string;
   setValue: (str: string) => void;
   placeholder?: string;
-  error: string;
 }
-const InputGroup = ({
+const TextInput = ({
   type,
   value,
+  error,
+  className,
   setValue,
   placeholder,
-  error,
 }: InputProp) => {
-  const handleOnchange = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleOnchange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
     setValue(e.target.value);
-  };
+  }, []);
 
   return (
-    <div className='pb-4'>
+    <>
       <input
-        className='border rounded p-3 w-full'
+        className={className}
         type={type}
         value={value}
         placeholder={placeholder}
         onChange={handleOnchange}
       />
       <p className='text-red-500 text-sm'>{error}</p>
-    </div>
+    </>
   );
 };
 
-export default InputGroup;
+export default TextInput;
