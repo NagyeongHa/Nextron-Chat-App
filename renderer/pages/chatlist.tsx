@@ -1,52 +1,21 @@
-import { doc, DocumentData, onSnapshot } from "firebase/firestore";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import ChatRoomItem from "../components/ChatRoomItem";
 import Title from "../components/Title";
 import { useAuth } from "../context/Auth";
-import { db } from "../firebase";
-// interface ChatRoom {
-//   lastMessage: string;
-//   date: {
-//     seconds: number;
-//     nanoseconds: number;
-//   };
-//   user: {
-//     displayName: string;
-//     photoURL: string;
-//     uid: string;
-//   };
-// }
+import useGetOnSnapShotDoc from "../hooks/useGetOnSnapShotDoc";
 
 const ChatList = () => {
   const { user } = useAuth();
   const { uid } = user;
-  const [chatRoomList, setChatRoomList] = useState<DocumentData>([]);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    const getChatRoomCollection = () => {
-      onSnapshot(doc(db, "chat rooms", uid), doc => {
-        const data = doc.data();
-        const chatRoom = Object.values(data).map(item => item);
-        setChatRoomList(chatRoom);
-      });
-      setIsLoading(false);
-    };
-
-    getChatRoomCollection();
-
-    return () => {
-      getChatRoomCollection();
-    };
-  }, []);
+  const { data, isLoading } = useGetOnSnapShotDoc("chat rooms", uid);
 
   return (
     <div>
       <Title title='채팅' />
       <div>
         {!isLoading &&
-          Object.values(chatRoomList).map(item => (
-            <ChatRoomItem key={item.user.uid} chatRoom={item} />
+          Object.values(data).map(item => (
+            <ChatRoomItem key={item.lastMessage} chatRoom={item} />
           ))}
       </div>
     </div>

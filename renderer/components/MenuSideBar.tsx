@@ -32,7 +32,7 @@ const MenuSideBar = () => {
             </div>
           </Link>
 
-          <Link href='/groupchat'>
+          <Link href='/groupchatlist'>
             <div className='p-3 m-3 hover:bg-red-400 rounded-[10px] hover:text-white text-[#c5c5c5]'>
               <a>
                 <HiChatAlt2 size='2.2rem' className='inline-block' />

@@ -23,13 +23,15 @@ const ChatRoomItem = ({ chatRoom }: ChatRoomProp) => {
 
   return (
     <Link href={`/chat/${uid}`}>
-      <div className='flex flex-row bg-gray-200 justify-between cursor-pointer'>
-        {photoURL && <Image src={photoURL} width={55} height={55} />}
-        <div className='flex flex-col w-full'>
-          <span>{displayName}</span>
+      <div className='flex flex-row   hover:bg-red-50 px-10 py-4 justify-between cursor-pointer'>
+        {photoURL && (
+          <Image src={photoURL} width={55} height={55} className='photoURL' />
+        )}
+        <div className='flex flex-col w-full ml-3'>
+          <span className='font-bold'>{displayName}</span>
           <span>{lastMessage}</span>
         </div>
-        <div>{date.seconds}</div>
+        <div>{date && new Date(date.seconds * 1000).toLocaleTimeString()}</div>
       </div>
     </Link>
   );

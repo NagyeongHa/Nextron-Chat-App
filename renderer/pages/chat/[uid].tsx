@@ -2,11 +2,10 @@ import {
   addDoc,
   collection,
   DocumentData,
-  FieldValue,
   serverTimestamp,
 } from "firebase/firestore";
 import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
+import React, { KeyboardEvent, useEffect, useState } from "react";
 import Messages from "../../components/message/MessageList";
 
 import Title from "../../components/Title";
@@ -14,21 +13,12 @@ import { useAuth } from "../../context/Auth";
 import { db } from "../../firebase";
 import { callGetDoc, callSaveDoc } from "../../utils/firebase";
 import { IoMdSend } from "react-icons/io";
-interface ChatRoom {
-  [x: string]: {
-    user: {
-      uid: string;
-      displayName: string;
-      photoURL: string;
-    };
-    date: FieldValue;
-    lastMessage: string;
-  };
-}
+import { ChatRoomList } from "../../types/ChatRoom";
 
 const Chat = () => {
   const [message, setMessage] = useState("");
   const { user } = useAuth();
+
   const {
     uid: currentUid,
     photoURL: currentPhotoURL,
@@ -45,6 +35,7 @@ const Chat = () => {
   const router = useRouter();
   const { uid } = router.query;
 
+  //firestore collection 이름
   const mixedUid =
     currentUid > chatUser.uid
       ? currentUid + chatUser.uid
@@ -61,11 +52,9 @@ const Chat = () => {
   }, []);
 
   //메시지 전송
-  const sendMessage = async e => {
-    e.preventDefault();
-
+  const sendMessage = async () => {
     //채팅목록에서 보이는 마지막 메시지 업데이트
-    const currentUserChatRoomData: ChatRoom = {
+    const currentUserChatRoomData: ChatRoomList = {
       [chatUser.uid]: {
         user: {
           uid: chatUser.uid,
@@ -77,7 +66,7 @@ const Chat = () => {
       },
     };
 
-    const chatUserChatRoomData: ChatRoom = {
+    const chatUserChatRoomData: ChatRoomList = {
       [currentUid]: {
         user: {
           uid: currentUid,
@@ -105,26 +94,36 @@ const Chat = () => {
     setMessage("");
   };
 
+  const onEnterPress = (e: KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key == "Enter" && e.shiftKey == false) {
+      sendMessage();
+    }
+  };
   return (
-    <div className='flex flex-col justify-between h-full p-3'>
-      <Title title={`${chatUser.displayName} - ${chatUser.uid}`} />
+    <div className='flex flex-col justify-start h-screen p-3'>
+      <Title title={`${chatUser.displayName}`} />
       <Messages />
-      <form onSubmit={sendMessage}>
-        <div className='relative w-full h-full'>
-          <textarea
-            className='w-full relative  border resize-none rounded-md mb-1'
-            onChange={e => setMessage(e.target.value)}
-            value={message}
-            rows={3}
+      <div className='relative'>
+        <textarea
+          className='w-full absloute border resize-none rounded-md mb-1'
+          onChange={e => setMessage(e.target.value)}
+          onKeyDown={onEnterPress}
+          value={message}
+          rows={3}
+        />
+        <button
+          onClick={sendMessage}
+          className='absolute'
+          disabled={!message.trim() ? true : false}
+        >
+          <IoMdSend
+            size={28}
+            className={`absolute  p-1 left-[-2rem] bottom-[-4rem] ${
+              !message.trim() ? "text-gray-200" : "text-gray-400"
+            }`}
           />
-          <button>
-            <IoMdSend
-              size={28}
-              className='absolute inline-block p-1 left-[89rem] bottom-[1rem]'
-            />
-          </button>
-        </div>
-      </form>
+        </button>
+      </div>
     </div>
   );
 };

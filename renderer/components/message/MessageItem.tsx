@@ -30,12 +30,12 @@ const MessageItem = ({ messages }: MessageProp) => {
             )}
             <div className='flex flex-col items-end m-3'>
               <div>{displayName}</div>
-              <div className='p-5 rounded-2xl rounded-tr-none bg-red-100'>
+              <div className='p-4 rounded-2xl rounded-tr-none bg-red-100'>
                 {message}
               </div>
             </div>
           </div>
-          <div>
+          <div className='mt-16 text-sm'>
             {date && new Date(date.seconds * 1000).toLocaleTimeString()}
           </div>
         </div>
@@ -52,12 +52,12 @@ const MessageItem = ({ messages }: MessageProp) => {
             )}
             <div className='flex flex-col items-start m-3'>
               <div>{displayName}</div>
-              <div className='p-5 rounded-2xl rounded-tl-none bg-gray-200'>
+              <div className='p-4 rounded-2xl rounded-tl-none bg-gray-200'>
                 {message}
               </div>
             </div>
           </div>
-          <div>
+          <div className='mt-16 text-sm'>
             {date && new Date(date.seconds * 1000).toLocaleTimeString()}
           </div>
         </div>
