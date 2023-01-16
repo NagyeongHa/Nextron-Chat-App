@@ -24,4 +24,8 @@
   .sideBarButton {
     @apply p-3 m-3 hover:bg-red-400 rounded-[10px]  hover:text-white text-[#c5c5c5];
   }
+
+  .messageSendIcon {
+    @apply absolute  p-1 left-[-2.3rem] bottom-[-5rem];
+  }
 }

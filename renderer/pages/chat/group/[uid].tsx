@@ -2,6 +2,7 @@ import {
   addDoc,
   collection,
   DocumentData,
+  FieldValue,
   serverTimestamp,
 } from "firebase/firestore";
 import { useRouter } from "next/router";
@@ -18,6 +19,8 @@ import { callGetDoc, callSaveDoc } from "../../../utils/firebase";
 import { IoMdSend } from "react-icons/io";
 import { useAuth } from "../../../context/Auth";
 import { db } from "../../../firebase";
+import { GroupChatData } from "../../../types/ChatRoom";
+import Textarea from "../../../components/common/Textarea";
 
 const GroupChat = () => {
   const router = useRouter();
@@ -45,9 +48,9 @@ const GroupChat = () => {
   const uidList = String(uid).split(",");
 
   //유저들 정보 가져오기
-  const getChatUsers = async () => {
+  const getChatUsers = () => {
     const users = [];
-    await uidList.map(uid => {
+    uidList.map(uid => {
       callGetDoc("users", uid)
         .then(user => users.push(user))
         .then(() => getUserName());
@@ -74,7 +77,7 @@ const GroupChat = () => {
 
   //메시지 전송
   const sendMessage = async () => {
-    const ChatRoomData = {
+    const ChatRoomData: GroupChatData = {
       [mixUid]: {
         date: serverTimestamp(),
         lastMessage: message,
@@ -105,28 +108,14 @@ const GroupChat = () => {
     setMessage("");
   };
 
-  const onEnterPress = (e: KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key == "Enter" && e.shiftKey == false) {
-      sendMessage();
-    }
-  };
-
-  const onChangeHandler = useCallback(
-    (e: ChangeEvent<HTMLTextAreaElement>) => {
-      setMessage(e.target.value);
-    },
-    [message]
-  );
-
   return (
     <div className='flex flex-col justify-start h-screen p-3'>
       <Title title={`${userNames} (${uidList.length})`} />
       <MessageList />
       <div className='relative'>
-        <textarea
-          className='w-full absloute border resize-none rounded-md mb-1'
-          onChange={onChangeHandler}
-          onKeyDown={onEnterPress}
+        <Textarea
+          setValue={setMessage}
+          onKeyDown={sendMessage}
           value={message}
           rows={3}
         />
@@ -137,7 +126,7 @@ const GroupChat = () => {
         >
           <IoMdSend
             size={28}
-            className={`absolute  p-1 left-[-2rem] bottom-[-4rem] ${
+            className={`messageSendIcon ${
               !message.trim() ? "text-gray-200" : "text-gray-400"
             }`}
           />

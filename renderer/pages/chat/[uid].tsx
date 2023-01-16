@@ -19,7 +19,8 @@ import { useAuth } from "../../context/Auth";
 import { db } from "../../firebase";
 import { callGetDoc, callSaveDoc } from "../../utils/firebase";
 import { IoMdSend } from "react-icons/io";
-import { ChatRoomList } from "../../types/ChatRoom";
+import { ChatRoomData } from "../../types/ChatRoom";
+import Textarea from "../../components/common/Textarea";
 
 const Chat = () => {
   const router = useRouter();
@@ -59,7 +60,7 @@ const Chat = () => {
   //메시지 전송
   const sendMessage = async () => {
     //채팅목록에서 보이는 마지막 메시지 업데이트
-    const currentUserChatRoomData: ChatRoomList = {
+    const currentUserChatRoomData: ChatRoomData = {
       [chatUser.uid]: {
         user: {
           uid: chatUser.uid,
@@ -71,7 +72,7 @@ const Chat = () => {
       },
     };
 
-    const restUserChatRoomData: ChatRoomList = {
+    const restUserChatRoomData: ChatRoomData = {
       [currentUid]: {
         user: {
           uid: currentUid,
@@ -100,28 +101,14 @@ const Chat = () => {
     setMessage("");
   };
 
-  const onEnterPress = (e: KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key == "Enter" && e.shiftKey == false) {
-      sendMessage();
-    }
-  };
-
-  const onChangeHandler = useCallback(
-    (e: ChangeEvent<HTMLTextAreaElement>) => {
-      setMessage(e.target.value);
-    },
-    [message]
-  );
-
   return (
     <div className='flex flex-col justify-start h-screen p-3'>
       <Title title={`${chatUser.displayName}`} />
       <MessageList />
       <div className='relative'>
-        <textarea
-          className='w-full absloute border resize-none rounded-md mb-1'
-          onChange={onChangeHandler}
-          onKeyDown={onEnterPress}
+        <Textarea
+          setValue={setMessage}
+          onKeyDown={sendMessage}
           value={message}
           rows={3}
         />
@@ -132,7 +119,7 @@ const Chat = () => {
         >
           <IoMdSend
             size={28}
-            className={`absolute  p-1 left-[-2rem] bottom-[-4rem] ${
+            className={`messageSendIcon ${
               !message.trim() ? "text-gray-200" : "text-gray-400"
             }`}
           />
