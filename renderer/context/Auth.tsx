@@ -29,24 +29,25 @@ export const AuthProvider = ({ children }: Children) => {
   const [isLoading, setIsLoading] = useState(true);
   const [user, setUser] = useState<UserInfo>(null);
 
-  useEffect(() => {
-    const listener = onAuthStateChanged(auth, user => {
-      try {
-        if (user) {
-          setUser({
-            uid: user.uid,
-            email: user.email,
-            photoURL: user.photoURL,
-            displayName: user.displayName,
-          });
-          return setIsLoading(false);
-        }
-        return setIsLoading(true);
-      } catch (error) {
-        console.log(error);
+  const listener = onAuthStateChanged(auth, user => {
+    try {
+      if (user) {
+        setUser({
+          uid: user.uid,
+          email: user.email,
+          photoURL: user.photoURL,
+          displayName: user.displayName,
+        });
+        return setIsLoading(false);
       }
-    });
+      return setIsLoading(true);
+    } catch (error) {
+      console.log(error);
+    }
+  });
 
+  useEffect(() => {
+    listener();
     return () => listener();
   }, [auth]);
 
@@ -55,6 +56,7 @@ export const AuthProvider = ({ children }: Children) => {
   };
 
   const login = (email: string, password: string) => {
+    listener();
     return signInWithEmailAndPassword(auth, email, password);
   };
 

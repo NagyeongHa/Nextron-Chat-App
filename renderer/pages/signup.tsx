@@ -1,6 +1,7 @@
 import { updateProfile } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
 import Link from "next/link";
+import { useRouter } from "next/router";
 
 import React, { useState } from "react";
 import InputGroup from "../components/common/TextInput";
@@ -15,6 +16,7 @@ const Signup = () => {
   const [passwordError, setPasswordError] = useState("");
 
   const { signUp } = useAuth();
+  const router = useRouter();
 
   const handleSignUp = async () => {
     if (!name.trim()) {
@@ -38,14 +40,13 @@ const Signup = () => {
     try {
       const create = await signUp(email, password);
       const user = create.user;
-      const photoURL = `https://avatars.dicebear.com/api/big-ears-neutral/${user.email}.svg`;
+      const photoURL = `https://api.dicebear.com/5.x/big-ears-neutral/svg?seed=${user.email}&backgroundColor=f8b788,ffdfbf,da9969,ffd5dc`;
 
       if (user) {
         await updateUserInfo(user, photoURL);
         await saveUser(user, photoURL);
       }
-
-      document.location.href = "/login";
+      router.push("/login");
     } catch (error) {
       console.log(error.code);
 
