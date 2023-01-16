@@ -46,7 +46,7 @@ const Signup = () => {
         await saveUser(user, photoURL);
       }
 
-      router.push("/login");
+      router.replace("/login");
       console.log(create.user);
     } catch (error) {
       console.log(error.code);

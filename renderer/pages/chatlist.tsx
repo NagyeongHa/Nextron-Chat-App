@@ -7,6 +7,8 @@ import useGetOnSnapShotDoc from "../hooks/useGetOnSnapShotDoc";
 const ChatList = () => {
   const { user } = useAuth();
   const { uid } = user;
+  console.log(uid);
+
   const { data, isLoading } = useGetOnSnapShotDoc("chat rooms", uid);
 
   return (

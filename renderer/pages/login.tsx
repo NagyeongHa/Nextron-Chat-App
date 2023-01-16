@@ -25,7 +25,7 @@ const Login = () => {
 
     setPersistence(auth, browserLocalPersistence).then(() => {
       login(email, password)
-        .then(() => router.push("/home"))
+        .then(() => router.replace("/home"))
         .catch(error => {
           console.log(error.code);
           switch (error.code) {
