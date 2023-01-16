@@ -13,7 +13,7 @@ import React, {
   useCallback,
 } from "react";
 import MessageList from "../../../components/message/MessageList";
-import Title from "../../../components/Title";
+import Title from "../../../components/common/Title";
 import { callGetDoc, callSaveDoc } from "../../../utils/firebase";
 import { IoMdSend } from "react-icons/io";
 import { useAuth } from "../../../context/Auth";
@@ -22,11 +22,12 @@ import { db } from "../../../firebase";
 const GroupChat = () => {
   const router = useRouter();
   const { uid } = router.query;
-
   const { user } = useAuth();
-  const [isLoading, setIsLoading] = useState(true);
-  const [userName, setUserName] = useState("");
+
+  // const [mixUid, setmixUid] = useState("");
+  const [userNames, setUserNames] = useState("");
   const [message, setMessage] = useState("");
+  const [mixUid, setMixUid] = useState("");
   const [chatUser, setChatUser] = useState<DocumentData>({
     email: "",
     uid: "",
@@ -40,9 +41,6 @@ const GroupChat = () => {
     displayName: currentDisplayName,
   } = user;
 
-  const mixUid = String(uid).replaceAll(",", "");
-  console.log("ssssssss", mixUid);
-
   //콤마기준으로 uid 구분하고 배열에 담음
   const uidList = String(uid).split(",");
 
@@ -50,39 +48,32 @@ const GroupChat = () => {
   const getChatUsers = async () => {
     const users = [];
     await uidList.map(uid => {
-      callGetDoc("users", uid).then(user => users.push(user));
+      callGetDoc("users", uid)
+        .then(user => users.push(user))
+        .then(() => getUserName());
     });
 
     setChatUser(users);
-    setIsLoading(false);
+  };
+
+  const getUserName = () => {
+    if (chatUser.length) {
+      const names = chatUser.map(user => user.displayName);
+      setUserNames(names.join());
+      return;
+    }
   };
 
   useEffect(() => {
-    getChatUsers();
+    setMixUid(String(uid).replaceAll(",", ""));
   }, []);
 
-  //   const makeName = () => {
-  //     const userName = Object.values(chatUser).map(user => user.displayName);
-  //     console.log("userName", userName);
+  useEffect(() => {
+    getChatUsers();
+  }, [mixUid]);
 
-  //     const name = userName.reduce((acc, cur) => {
-  //       return `${acc} ` + cur;
-  //     }, "");
-  //     console.log("name", name);
-
-  //     setUserName(name);
-  //   };
-
-  // useEffect(() => {
-  //   makeName();
-  //   console.log(isLoading);
-  // }, [isLoading, chatUser]);
-
-  console.log(isLoading);
-
+  //메시지 전송
   const sendMessage = async () => {
-    console.log("dda", mixUid);
-
     const ChatRoomData = {
       [mixUid]: {
         date: serverTimestamp(),
@@ -90,6 +81,15 @@ const GroupChat = () => {
         user: chatUser,
       },
     };
+
+    const saveRestUserChatRoom = async () => {
+      await chatUser.map(user =>
+        callSaveDoc("groupChat rooms", user.uid, ChatRoomData)
+      );
+    };
+
+    await callSaveDoc("groupChat rooms", currentUid, ChatRoomData);
+    saveRestUserChatRoom();
 
     //메시지
     const chatMessageData = {
@@ -99,22 +99,10 @@ const GroupChat = () => {
       message: message,
     };
 
-    const saveRestUserChatRoom = async () => {
-      await chatUser.map(user =>
-        callSaveDoc("groupChat rooms", user.uid, ChatRoomData)
-      );
-    };
-
     const chatMessageRef = collection(db, `message-${mixUid}`);
-
-    await callSaveDoc("groupChat rooms", currentUid, ChatRoomData);
-    saveRestUserChatRoom();
     await addDoc(chatMessageRef, chatMessageData);
-    // await callSaveDoc("chat rooms", chatUser.uid, chatUserChatRoomData);
 
     setMessage("");
-
-    //     const chatUserChatRoomData = {};
   };
 
   const onEnterPress = (e: KeyboardEvent<HTMLTextAreaElement>) => {
@@ -123,13 +111,16 @@ const GroupChat = () => {
     }
   };
 
-  const onChangeHandler = useCallback((e: ChangeEvent<HTMLTextAreaElement>) => {
-    setMessage(e.target.value);
-  }, []);
+  const onChangeHandler = useCallback(
+    (e: ChangeEvent<HTMLTextAreaElement>) => {
+      setMessage(e.target.value);
+    },
+    [message]
+  );
 
   return (
     <div className='flex flex-col justify-start h-screen p-3'>
-      {/* <Title title={`${userName} (${uidList.length})`} /> */}
+      <Title title={`${userNames} (${uidList.length})`} />
       <MessageList />
       <div className='relative'>
         <textarea

@@ -10,7 +10,7 @@ const AuthedRoute = ({ children }: Children) => {
   useEffect(() => {
     if (!user) {
       logout();
-      router.push("/login");
+      router.replace("/login");
     }
   }, [user]);
 

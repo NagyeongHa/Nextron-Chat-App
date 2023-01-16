@@ -5,10 +5,16 @@ import {
   serverTimestamp,
 } from "firebase/firestore";
 import { useRouter } from "next/router";
-import React, { KeyboardEvent, useEffect, useState } from "react";
+import React, {
+  ChangeEvent,
+  KeyboardEvent,
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
 import MessageList from "../../components/message/MessageList";
 
-import Title from "../../components/Title";
+import Title from "../../components/common/Title";
 import { useAuth } from "../../context/Auth";
 import { db } from "../../firebase";
 import { callGetDoc, callSaveDoc } from "../../utils/firebase";
@@ -16,17 +22,11 @@ import { IoMdSend } from "react-icons/io";
 import { ChatRoomList } from "../../types/ChatRoom";
 
 const Chat = () => {
-  const [message, setMessage] = useState("");
-  const { user } = useAuth();
   const router = useRouter();
   const { uid } = router.query;
+  const { user } = useAuth();
 
-  const {
-    uid: currentUid,
-    photoURL: currentPhotoURL,
-    displayName: currentDisplayName,
-  } = user;
-
+  const [message, setMessage] = useState("");
   const [chatUser, setChatUser] = useState<DocumentData>({
     email: "",
     uid: "",
@@ -34,8 +34,14 @@ const Chat = () => {
     photoURL: "",
   });
 
+  const {
+    uid: currentUid,
+    photoURL: currentPhotoURL,
+    displayName: currentDisplayName,
+  } = user;
+
   //firestore collection 이름
-  const mixedUid =
+  const mixUid =
     currentUid > chatUser.uid
       ? chatUser.uid + currentUid
       : currentUid + chatUser.uid;
@@ -77,6 +83,9 @@ const Chat = () => {
       },
     };
 
+    await callSaveDoc("chat rooms", currentUid, currentUserChatRoomData);
+    await callSaveDoc("chat rooms", chatUser.uid, restUserChatRoomData);
+
     //메시지
     const chatMessageData = {
       displayName: currentDisplayName,
@@ -85,9 +94,7 @@ const Chat = () => {
       message: message,
     };
 
-    const chatMessageRef = collection(db, `message-${mixedUid}`);
-    await callSaveDoc("chat rooms", currentUid, currentUserChatRoomData);
-    await callSaveDoc("chat rooms", chatUser.uid, restUserChatRoomData);
+    const chatMessageRef = collection(db, `message-${mixUid}`);
     await addDoc(chatMessageRef, chatMessageData);
 
     setMessage("");
@@ -99,6 +106,13 @@ const Chat = () => {
     }
   };
 
+  const onChangeHandler = useCallback(
+    (e: ChangeEvent<HTMLTextAreaElement>) => {
+      setMessage(e.target.value);
+    },
+    [message]
+  );
+
   return (
     <div className='flex flex-col justify-start h-screen p-3'>
       <Title title={`${chatUser.displayName}`} />
@@ -106,7 +120,7 @@ const Chat = () => {
       <div className='relative'>
         <textarea
           className='w-full absloute border resize-none rounded-md mb-1'
-          onChange={e => setMessage(e.target.value)}
+          onChange={onChangeHandler}
           onKeyDown={onEnterPress}
           value={message}
           rows={3}

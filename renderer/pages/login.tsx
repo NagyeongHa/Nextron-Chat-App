@@ -2,7 +2,7 @@ import { browserLocalPersistence, setPersistence } from "firebase/auth";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { FormEvent, useState } from "react";
-import InputGroup from "../components/TextInput";
+import InputGroup from "../components/common/TextInput";
 import { useAuth } from "../context/Auth";
 import { auth } from "../firebase";
 

@@ -1,13 +1,12 @@
 import React from "react";
-import ChatRoomItem from "../components/ChatRoomItem";
-import Title from "../components/Title";
+import ChatRoomItem from "../components/chat/ChatRoomItem";
+import Title from "../components/common/Title";
 import { useAuth } from "../context/Auth";
 import useGetOnSnapShotDoc from "../hooks/useGetOnSnapShotDoc";
 
 const ChatList = () => {
   const { user } = useAuth();
   const { uid } = user;
-  console.log(uid);
 
   const { data, isLoading } = useGetOnSnapShotDoc("chat rooms", uid);
 
@@ -17,7 +16,7 @@ const ChatList = () => {
       <div>
         {!isLoading &&
           Object.values(data).map(item => (
-            <ChatRoomItem key={item.lastMessage} chatRoom={item} />
+            <ChatRoomItem key={item.date} chatRoom={item} />
           ))}
       </div>
     </div>

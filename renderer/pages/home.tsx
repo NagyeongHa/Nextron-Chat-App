@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Head from "next/head";
-import Title from "../components/Title";
+import Title from "../components/common/Title";
 import Image from "next/image";
 import Link from "next/link";
 import { getUsersCollection } from "../utils/firebase";
@@ -41,8 +41,8 @@ function Home() {
     const addCurrentUid = checkedUserList.concat(user.uid);
     const sortUid = addCurrentUid.sort();
 
-    !checkedUserList.length && checkedUserList.length === 1
-      ? router.push(`/chat/${checkedUserList}`)
+    checkedUserList.length && checkedUserList.length === 1
+      ? router.push(`/chat/${checkedUserList.join("")}`)
       : router.push(`/chat/group/${sortUid}`);
   };
 
@@ -62,6 +62,7 @@ function Home() {
             onClick={addNewChatRoomHandler}
             className='mt-4 mr-2 text-white bg-red-400 px-3 py-1 text-lg rounded-3xl'
             hidden={isHiddenCheckBox}
+            disabled={!checkedUserList.length}
           >
             확인
           </button>
@@ -97,14 +98,16 @@ function Home() {
                 onChange={e => checkedUserHandler(e.target.checked, user.uid)}
               />
               <Link href={`/chat/${[user.uid]}`}>
-                <div className='cursor-pointer '>
-                  <Image
-                    className='photoURL'
-                    src={user.photoURL}
-                    width={50}
-                    height={50}
-                  ></Image>
-                  <span className='ml-3'>{user.displayName}</span>
+                <div className='w-full'>
+                  <div className='cursor-pointer flex-row flex items-center'>
+                    <Image
+                      className='photoURL'
+                      src={user.photoURL}
+                      width={50}
+                      height={50}
+                    ></Image>
+                    <span className='ml-3'>{user.displayName}</span>
+                  </div>
                 </div>
               </Link>
             </div>
@@ -115,12 +118,3 @@ function Home() {
 }
 
 export default Home;
-
-// export async function getServerSideProps() {
-//   const { user } = useAuth();
-//   const users = await getUsersCollection(user.email);
-
-//   return {
-//     props: { user: users },
-//   };
-// }

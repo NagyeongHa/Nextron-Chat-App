@@ -9,11 +9,9 @@ const useGetOnSnapShotDoc = (collection: string, uid: string) => {
   const getChatRoomCollection = async () => {
     await onSnapshot(doc(db, collection, uid), doc => {
       const result = doc.data();
-      console.log("result", result);
 
       if (result) {
         const data = Object.values(result).map(item => item);
-        console.log("data", data);
 
         setData(data);
         setIsLoading(false);

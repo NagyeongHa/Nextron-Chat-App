@@ -20,4 +20,8 @@
   .pinkButton {
     @apply bg-red-300  text-white  w-full p-2 py-3 rounded-md;
   }
+
+  .sideBarButton {
+    @apply p-3 m-3 hover:bg-red-400 rounded-[10px]  hover:text-white text-[#c5c5c5];
+  }
 }

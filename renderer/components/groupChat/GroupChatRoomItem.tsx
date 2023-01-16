@@ -1,7 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
-import { useAuth } from "../../context/Auth";
 import { GroupChatRoomItem } from "../../types/ChatRoom";
 
 interface ChatRoomProp {
@@ -9,13 +8,9 @@ interface ChatRoomProp {
 }
 
 const GroupChatItem = ({ chatList }: ChatRoomProp) => {
-  const { user: currentUser } = useAuth();
-  const { uid: currentUid } = currentUser;
   const { user, date } = chatList;
-
   const userList = user.map(user => user.uid);
   const groupuid = userList.sort();
-  console.log("groupuid", groupuid);
 
   return (
     <Link href={`/chat/group/${groupuid}`}>

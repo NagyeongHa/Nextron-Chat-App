@@ -1,21 +1,10 @@
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
-interface ChatRoom {
-  lastMessage: string;
-  date: {
-    seconds: number;
-    nanoseconds: number;
-  };
-  user: {
-    displayName: string;
-    photoURL: string;
-    uid: string;
-  };
-}
+import { ChatRoomItem } from "../../types/ChatRoom";
 
 interface ChatRoomProp {
-  chatRoom: ChatRoom;
+  chatRoom: ChatRoomItem;
 }
 const ChatRoomItem = ({ chatRoom }: ChatRoomProp) => {
   const { user, lastMessage, date } = chatRoom;

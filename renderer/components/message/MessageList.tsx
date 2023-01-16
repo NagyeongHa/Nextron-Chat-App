@@ -25,28 +25,24 @@ const Messages = () => {
     ? uid + user.uid
     : user.uid + uid;
 
-  console.log("makeUid", makeUid);
-
   //메시지 가져오기
-  useEffect(() => {
-    const getMessageList = async () => {
-      const messageRef = collection(db, `message-${makeUid}`);
-      const q = query(messageRef, orderBy("date", "asc"));
-      onSnapshot(q, querySnapshot => {
-        const message = [];
-        querySnapshot.forEach(doc => {
-          message.push(doc.data());
-          console.log(doc.data());
-        });
-
-        setMessageList(message);
-        setIsLoading(false);
+  const getMessageList = async () => {
+    const messageRef = collection(db, `message-${makeUid}`);
+    const q = query(messageRef, orderBy("date", "asc"));
+    onSnapshot(q, querySnapshot => {
+      const message = [];
+      querySnapshot.forEach(doc => {
+        message.push(doc.data());
       });
-    };
 
+      setMessageList(message);
+      setIsLoading(false);
+    });
+  };
+
+  useEffect(() => {
     getMessageList();
   }, []);
-  console.log(messageList);
 
   const scrollToBottom = () => {
     if (messageBoxRef.current) {

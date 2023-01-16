@@ -1,11 +1,11 @@
-import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+import { updateProfile } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
 import Link from "next/link";
-import { useRouter } from "next/router";
+
 import React, { useState } from "react";
-import InputGroup from "../components/TextInput";
+import InputGroup from "../components/common/TextInput";
 import { useAuth } from "../context/Auth";
-import { auth, db } from "../firebase";
+import { db } from "../firebase";
 const Signup = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -14,7 +14,6 @@ const Signup = () => {
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
 
-  const router = useRouter();
   const { signUp } = useAuth();
 
   const handleSignUp = async () => {
@@ -47,7 +46,6 @@ const Signup = () => {
       }
 
       document.location.href = "/login";
-      console.log(create.user);
     } catch (error) {
       console.log(error.code);
 
@@ -74,7 +72,6 @@ const Signup = () => {
       });
     } catch (error) {
       console.log(error);
-      new Error("사용자 정보를 업데이트 하지못했습니다");
     }
   };
 

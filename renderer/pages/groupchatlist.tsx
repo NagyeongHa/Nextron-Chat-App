@@ -1,6 +1,6 @@
 import React from "react";
 import GroupChatRoomItem from "../components/groupChat/GroupChatRoomItem";
-import Title from "../components/Title";
+import Title from "../components/common/Title";
 import { useAuth } from "../context/Auth";
 import useGetOnSnapShotDoc from "../hooks/useGetOnSnapShotDoc";
 
@@ -8,7 +8,6 @@ const GroupChat = () => {
   const { user } = useAuth();
   const { uid } = user;
   const { data, isLoading } = useGetOnSnapShotDoc("groupChat rooms", uid);
-  console.log(data);
 
   return (
     <div>

@@ -1,5 +1,5 @@
 import React, { ChangeEvent, useCallback } from "react";
-import { InputProp } from "../types/TextInput";
+import { InputProp } from "../../types/TextInput";
 
 const TextInput = ({
   type,
@@ -9,9 +9,12 @@ const TextInput = ({
   setValue,
   placeholder,
 }: InputProp) => {
-  const handleOnchange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
-    setValue(e.target.value);
-  }, []);
+  const handleOnchange = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => {
+      setValue(e.target.value);
+    },
+    [value]
+  );
 
   return (
     <div className='pb-4'>

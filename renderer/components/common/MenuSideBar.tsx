@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
-import { useAuth } from "../context/Auth";
+import { useAuth } from "../../context/Auth";
 import { AiFillHome } from "react-icons/ai";
 import { BsFillChatFill } from "react-icons/bs";
 import { HiChatAlt2 } from "react-icons/hi";
@@ -18,14 +18,14 @@ const MenuSideBar = () => {
       <div className='w-28 h-screen bg-gray-100  flex flex-col items-center justify-between text-center'>
         <div>
           <Link href='/home'>
-            <div className='p-3 m-3 mt-7  hover:bg-red-400 rounded-[10px]  hover:text-white text-[#c5c5c5]'>
+            <div className='sideBarButton mt-7 '>
               <a>
                 <AiFillHome size='1.8rem' className='inline-block' />
               </a>
             </div>
           </Link>
           <Link href='/chatlist'>
-            <div className='p-3 m-3 hover:bg-red-400 rounded-[10px]  hover:text-white text-[#c5c5c5] '>
+            <div className='sideBarButton'>
               <a>
                 <BsFillChatFill size='1.7rem' className='inline-block' />
               </a>
@@ -33,7 +33,7 @@ const MenuSideBar = () => {
           </Link>
 
           <Link href='/groupchatlist'>
-            <div className='p-3 m-3 hover:bg-red-400 rounded-[10px] hover:text-white text-[#c5c5c5]'>
+            <div className='sideBarButton'>
               <a>
                 <HiChatAlt2 size='2.2rem' className='inline-block' />
               </a>
@@ -52,8 +52,8 @@ const MenuSideBar = () => {
               />
             )}
           </div>
-
-          <button className='mb-6' onClick={handleLogout}>
+          <p className='font-semibold'>{displayName}</p>
+          <button className='mb-6 mt-3' onClick={handleLogout}>
             logout
           </button>
         </div>
