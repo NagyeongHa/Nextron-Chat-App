@@ -1,5 +1,5 @@
 import React from "react";
-import GroupChatItem from "../components/groupChat/GroupChatItem";
+import GroupChatRoomItem from "../components/groupChat/GroupChatRoomItem";
 import Title from "../components/Title";
 import { useAuth } from "../context/Auth";
 import useGetOnSnapShotDoc from "../hooks/useGetOnSnapShotDoc";
@@ -8,12 +8,13 @@ const GroupChat = () => {
   const { user } = useAuth();
   const { uid } = user;
   const { data, isLoading } = useGetOnSnapShotDoc("groupChat rooms", uid);
+  console.log(data);
 
   return (
     <div>
       <Title title='그룹 채팅' />
       {!isLoading &&
-        data.map(item => <GroupChatItem key={item.uid} chatList={item} />)}
+        data.map(item => <GroupChatRoomItem key={item.date} chatList={item} />)}
     </div>
   );
 };

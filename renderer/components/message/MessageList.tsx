@@ -19,17 +19,24 @@ const Messages = () => {
   const { user } = useAuth();
   const { uid } = useRouter().query;
 
-  const mixedUid = user.uid > uid ? user.uid + uid : uid + user.uid;
+  const makeUid = String(uid).includes(",")
+    ? String(uid).replaceAll(",", "")
+    : user.uid > uid
+    ? uid + user.uid
+    : user.uid + uid;
+
+  console.log("makeUid", makeUid);
 
   //메시지 가져오기
   useEffect(() => {
     const getMessageList = async () => {
-      const messageRef = collection(db, `message-${mixedUid}`);
+      const messageRef = collection(db, `message-${makeUid}`);
       const q = query(messageRef, orderBy("date", "asc"));
       onSnapshot(q, querySnapshot => {
         const message = [];
         querySnapshot.forEach(doc => {
           message.push(doc.data());
+          console.log(doc.data());
         });
 
         setMessageList(message);
@@ -39,6 +46,7 @@ const Messages = () => {
 
     getMessageList();
   }, []);
+  console.log(messageList);
 
   const scrollToBottom = () => {
     if (messageBoxRef.current) {

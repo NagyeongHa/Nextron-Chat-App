@@ -6,7 +6,7 @@ import {
 } from "firebase/firestore";
 import { useRouter } from "next/router";
 import React, { KeyboardEvent, useEffect, useState } from "react";
-import Messages from "../../components/message/MessageList";
+import MessageList from "../../components/message/MessageList";
 
 import Title from "../../components/Title";
 import { useAuth } from "../../context/Auth";
@@ -18,6 +18,8 @@ import { ChatRoomList } from "../../types/ChatRoom";
 const Chat = () => {
   const [message, setMessage] = useState("");
   const { user } = useAuth();
+  const router = useRouter();
+  const { uid } = router.query;
 
   const {
     uid: currentUid,
@@ -32,22 +34,19 @@ const Chat = () => {
     photoURL: "",
   });
 
-  const router = useRouter();
-  const { uid } = router.query;
-
   //firestore collection 이름
   const mixedUid =
     currentUid > chatUser.uid
-      ? currentUid + chatUser.uid
-      : chatUser.uid + currentUid;
+      ? chatUser.uid + currentUid
+      : currentUid + chatUser.uid;
 
   //상대방 정보 가져오기
-  useEffect(() => {
-    const getChatUser = async () => {
-      const user = await callGetDoc("users", String(uid));
-      setChatUser(user);
-    };
+  const getChatUser = async () => {
+    const user = await callGetDoc("users", String(uid));
+    setChatUser(user);
+  };
 
+  useEffect(() => {
     getChatUser();
   }, []);
 
@@ -66,7 +65,7 @@ const Chat = () => {
       },
     };
 
-    const chatUserChatRoomData: ChatRoomList = {
+    const restUserChatRoomData: ChatRoomList = {
       [currentUid]: {
         user: {
           uid: currentUid,
@@ -88,7 +87,7 @@ const Chat = () => {
 
     const chatMessageRef = collection(db, `message-${mixedUid}`);
     await callSaveDoc("chat rooms", currentUid, currentUserChatRoomData);
-    await callSaveDoc("chat rooms", chatUser.uid, chatUserChatRoomData);
+    await callSaveDoc("chat rooms", chatUser.uid, restUserChatRoomData);
     await addDoc(chatMessageRef, chatMessageData);
 
     setMessage("");
@@ -99,10 +98,19 @@ const Chat = () => {
       sendMessage();
     }
   };
+
+  const addChatUser = () => {
+    console.log();
+  };
   return (
     <div className='flex flex-col justify-start h-screen p-3'>
-      <Title title={`${chatUser.displayName}`} />
-      <Messages />
+      <div className='flex flex-row justify-between items-center'>
+        <Title title={`${chatUser.displayName}`} />
+        <button className='py-3 mt-5 px-9' onClick={addChatUser}>
+          <span className='rounded-xl bg-gray-100 p-2'>유저 추가</span>
+        </button>
+      </div>
+      <MessageList />
       <div className='relative'>
         <textarea
           className='w-full absloute border resize-none rounded-md mb-1'
