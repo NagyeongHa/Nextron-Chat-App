@@ -56,7 +56,7 @@ function Home() {
         <title></title>
       </Head>
       <div className='flex flex-row justify-between items-center'>
-        <Title title='유저 목록' />
+        <Title title={`유저 목록 (${userList.length})`} />
         <div className='flex flex-row items-center'>
           <button
             onClick={addNewChatRoomHandler}
@@ -73,7 +73,6 @@ function Home() {
           >
             취소
           </button>
-
           <button onClick={clickedAddIconHandler}>
             <BiMessageAdd
               size={50}
@@ -83,7 +82,7 @@ function Home() {
           </button>
         </div>
       </div>
-      <div className='h-full overflow-y-scroll'>
+      <div className='h-full'>
         {!isLoading &&
           userList.map(user => (
             <div

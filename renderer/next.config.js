@@ -8,5 +8,6 @@ module.exports = {
   },
   images: {
     domains: ["api.dicebear.com", "avatars.dicebear.com"],
+    unoptimized: true,
   },
 };
