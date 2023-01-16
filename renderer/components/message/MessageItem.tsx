@@ -18,7 +18,7 @@ const MessageItem = ({ messages }: MessageProp) => {
   return (
     <div>
       {isMessageFromUser() ? (
-        <div className='flex items-center mx-4  flex-row-reverse'>
+        <div className='flex items-center mx-5  flex-row-reverse'>
           <div className='flex items-center flex-row-reverse'>
             {photoURL && (
               <Image
@@ -40,7 +40,7 @@ const MessageItem = ({ messages }: MessageProp) => {
           </div>
         </div>
       ) : (
-        <div className='flex items-center mx-4  flex-row'>
+        <div className='flex items-center mx-5  flex-row'>
           <div className='flex items-center flex-row'>
             {photoURL && (
               <Image

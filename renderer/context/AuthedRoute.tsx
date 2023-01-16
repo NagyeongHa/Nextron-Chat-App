@@ -4,11 +4,12 @@ import { Children } from "../types/Children";
 import { useAuth } from "./Auth";
 
 const AuthedRoute = ({ children }: Children) => {
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
     if (!user) {
+      logout();
       router.push("/login");
     }
   }, [user]);

@@ -11,11 +11,14 @@ const useGetOnSnapShotDoc = (collection: string, uid: string) => {
       const result = doc.data();
       console.log("result", result);
 
-      const data = Object.values(result).map(item => item);
-      console.log("data", data);
+      if (result) {
+        const data = Object.values(result).map(item => item);
+        console.log("data", data);
 
-      setData(data);
-      setIsLoading(false);
+        setData(data);
+        setIsLoading(false);
+        return;
+      }
     });
   };
 

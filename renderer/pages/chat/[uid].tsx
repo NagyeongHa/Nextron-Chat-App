@@ -99,17 +99,9 @@ const Chat = () => {
     }
   };
 
-  const addChatUser = () => {
-    console.log();
-  };
   return (
     <div className='flex flex-col justify-start h-screen p-3'>
-      <div className='flex flex-row justify-between items-center'>
-        <Title title={`${chatUser.displayName}`} />
-        <button className='py-3 mt-5 px-9' onClick={addChatUser}>
-          <span className='rounded-xl bg-gray-100 p-2'>유저 추가</span>
-        </button>
-      </div>
+      <Title title={`${chatUser.displayName}`} />
       <MessageList />
       <div className='relative'>
         <textarea

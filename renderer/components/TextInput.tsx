@@ -1,13 +1,6 @@
 import React, { ChangeEvent, useCallback } from "react";
+import { InputProp } from "../types/TextInput";
 
-interface InputProp {
-  type: string;
-  value: string;
-  error?: string;
-  className?: string;
-  setValue: (str: string) => void;
-  placeholder?: string;
-}
 const TextInput = ({
   type,
   value,
@@ -21,7 +14,7 @@ const TextInput = ({
   }, []);
 
   return (
-    <>
+    <div className='pb-4'>
       <input
         className={className}
         type={type}
@@ -30,7 +23,7 @@ const TextInput = ({
         onChange={handleOnchange}
       />
       <p className='text-red-500 text-sm'>{error}</p>
-    </>
+    </div>
   );
 };
 

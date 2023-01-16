@@ -16,7 +16,7 @@ const Login = () => {
   const handleLogin = (e: FormEvent) => {
     e.preventDefault();
 
-    if (!email.trim().length || !password.trim().length) {
+    if (!email.trim() || !password.trim()) {
       return setErrors({
         email: "",
         password: "이메일과 비밀번호를 입력해 주세요.",
@@ -53,9 +53,9 @@ const Login = () => {
 
   return (
     <div className='flex flex-col justify-center items-center h-screen'>
-      <div className='text-2xl'>Login</div>
-      <form className='w-5/12' onSubmit={handleLogin}>
-        <div className='pb-4'>
+      <div className='text-2xl py-10 font-semibold'>Login</div>
+      <form className='w-4/12' onSubmit={handleLogin}>
+        <div>
           <InputGroup
             type='text'
             placeholder='아이디'
@@ -65,7 +65,7 @@ const Login = () => {
             className='roundedInput'
           />
         </div>
-        <div className='pb-4'>
+        <div>
           <InputGroup
             type='password'
             placeholder='비밀번호'
@@ -75,12 +75,11 @@ const Login = () => {
             className='roundedInput'
           />
         </div>
-
-        <button className='bg-gray-700 text-white  w-full p-2'>로그인</button>
+        <button className='pinkButton'>로그인</button>
       </form>
 
-      <Link href='/signup' className='font-bold w-'>
-        계정이 없으신가요? 회원가입하기
+      <Link href='/signup'>
+        <a className='mt-3'>계정이 없으신가요? 회원가입하기</a>
       </Link>
     </div>
   );

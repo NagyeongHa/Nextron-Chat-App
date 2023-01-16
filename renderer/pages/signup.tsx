@@ -46,7 +46,7 @@ const Signup = () => {
         await saveUser(user, photoURL);
       }
 
-      router.replace("/login");
+      document.location.href = "/login";
       console.log(create.user);
     } catch (error) {
       console.log(error.code);
@@ -89,45 +89,45 @@ const Signup = () => {
 
   return (
     <div className='flex flex-col justify-center items-center h-screen'>
-      <div className='text-2xl'>signup</div>
-      <div className='w-5/12'>
+      <div className='text-2xl py-8 font-semibold'>Signup</div>
+      <div className='w-4/12'>
         <div>
-          <p>이름</p>
           <InputGroup
             type='text'
             value={name}
             setValue={setName}
             error={nameError}
+            placeholder='이름'
+            className='roundedInput'
           />
         </div>
         <div>
-          <p>이메일</p>
           <InputGroup
             type='text'
             value={email}
             setValue={setEmail}
             error={emailError}
+            placeholder='이메일'
+            className='roundedInput'
           />
         </div>
         <div>
-          <p>비밀번호</p>
           <InputGroup
             type='password'
             value={password}
             setValue={setPassword}
             error={passwordError}
+            placeholder='비밀번호'
+            className='roundedInput'
           />
         </div>
-        <button
-          className='bg-gray-700 text-white w-full p-2'
-          onClick={handleSignUp}
-        >
+        <button className='pinkButton' onClick={handleSignUp}>
           회원가입
         </button>
       </div>
 
-      <Link href='/login' className='font-bold'>
-        이미 계정이 있으신가요? 로그인하기
+      <Link href='/login'>
+        <a className='mt-3'>이미 계정이 있으신가요? 로그인하기</a>
       </Link>
     </div>
   );
