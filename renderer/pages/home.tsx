@@ -26,17 +26,20 @@ function Home() {
     getUsers();
   }, []);
 
+  //채팅 추가 버튼 클릭
   const clickedAddIconHandler = () => {
     setIsHiddenCheckBox(!isHiddenCheckBox);
     !isHiddenCheckBox && cancelHandler();
   };
 
+  //유저 체크박스
   const checkedUserHandler = (checked, uid) => {
     checked
       ? setCheckedUserList(pre => [...pre, uid])
       : setCheckedUserList(pre => [...pre.filter(item => item !== uid)]);
   };
 
+  //채팅방 생성
   const addNewChatRoomHandler = () => {
     const addCurrentUid = checkedUserList.concat(user.uid);
     const sortUid = addCurrentUid.sort();

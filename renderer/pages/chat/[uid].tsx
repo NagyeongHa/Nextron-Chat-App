@@ -59,7 +59,7 @@ const Chat = () => {
 
   //메시지 전송
   const sendMessage = async () => {
-    //채팅목록에서 보이는 마지막 메시지 업데이트
+    //채팅목록 저장
     const currentUserChatRoomData: ChatRoomData = {
       [chatUser.uid]: {
         user: {
@@ -87,7 +87,7 @@ const Chat = () => {
     await callSaveDoc("chat rooms", currentUid, currentUserChatRoomData);
     await callSaveDoc("chat rooms", chatUser.uid, restUserChatRoomData);
 
-    //메시지
+    //메시지 저장
     const chatMessageData = {
       displayName: currentDisplayName,
       photoURL: currentPhotoURL,

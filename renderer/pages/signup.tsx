@@ -1,12 +1,11 @@
-import { updateProfile } from "firebase/auth";
-import { doc, setDoc } from "firebase/firestore";
 import Link from "next/link";
 import { useRouter } from "next/router";
-
 import React, { useState } from "react";
 import InputGroup from "../components/common/TextInput";
 import { useAuth } from "../context/Auth";
-import { db } from "../firebase";
+import { callSaveDoc, updateUserInfo } from "../utils/firebase";
+import { blankCheck, signUpErrors } from "../utils/validator";
+
 const Signup = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -19,23 +18,17 @@ const Signup = () => {
   const router = useRouter();
 
   const handleSignUp = async () => {
-    if (!name.trim()) {
-      setNameError("이름을 입력해 주세요.");
-      return;
-    }
-    setNameError("");
+    const nameCheck = blankCheck("이름을", name);
+    if (!nameCheck.isvalid) return setNameError(nameCheck.error);
+    setNameError(nameCheck.error);
 
-    if (!email.trim()) {
-      setEmailError("이메일을 입력해 주세요.");
-      return;
-    }
-    setEmailError("");
+    const emailCheck = blankCheck("이메일을", email);
+    if (!emailCheck.isvalid) return setEmailError(emailCheck.error);
+    setEmailError(emailCheck.error);
 
-    if (!password.trim()) {
-      setPasswordError("비밀번호를 입력해 주세요.");
-      return;
-    }
-    setPasswordError("");
+    const passwordCheck = blankCheck("비밀번호를", password);
+    if (!passwordCheck.isvalid) return setPasswordError(passwordCheck.error);
+    setPasswordError(passwordCheck.error);
 
     try {
       const create = await signUp(email, password);
@@ -43,46 +36,25 @@ const Signup = () => {
       const photoURL = `https://api.dicebear.com/5.x/big-ears-neutral/svg?seed=${user.email}&backgroundColor=f8b788,ffdfbf,da9969,ffd5dc`;
 
       if (user) {
-        await updateUserInfo(user, photoURL);
-        await saveUser(user, photoURL);
+        const userInfo = {
+          displayName: name,
+          email,
+          uid: user.uid,
+          photoURL: photoURL,
+        };
+
+        await updateUserInfo(user, photoURL, name);
+        await callSaveDoc("users", user.uid, userInfo);
       }
       router.push("/login");
     } catch (error) {
-      console.log(error.code);
+      const result = signUpErrors(error.code);
 
-      switch (error.code) {
-        case "auth/email-already-in-use":
-          return setEmailError("이미 가입된 계정입니다.");
-        case "auth/weak-password":
-          return setPasswordError("6자 이상 입력해주세요.");
-        case "auth/missing-email":
-          return setEmailError("이메일을 입력해 주세요,");
-        case "auth/invalid-email":
-          return setEmailError("이메일 형식이 아닙니다.");
-        default:
-          return setNameError(""), setPasswordError(""), setEmailError("");
+      if (result.type === "email") {
+        return setEmailError(result.error);
       }
+      return setPasswordError(result.error);
     }
-  };
-
-  const updateUserInfo = async (user, photoURL) => {
-    try {
-      await updateProfile(user, {
-        photoURL,
-        displayName: name,
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const saveUser = async (user, photoURL) => {
-    await setDoc(doc(db, "users", user.uid), {
-      displayName: name,
-      email,
-      uid: user.uid,
-      photoURL: photoURL,
-    });
   };
 
   return (

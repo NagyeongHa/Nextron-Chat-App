@@ -70,6 +70,7 @@ const GroupChat = () => {
 
   //메시지 전송
   const sendMessage = async () => {
+    //채팅목록 저장
     const ChatRoomData: GroupChatData = {
       [mixUid]: {
         date: serverTimestamp(),
@@ -87,7 +88,7 @@ const GroupChat = () => {
     await callSaveDoc("groupChat rooms", currentUid, ChatRoomData);
     saveRestUserChatRoom();
 
-    //메시지
+    //메시지 저장
     const chatMessageData = {
       displayName: currentDisplayName,
       photoURL: currentPhotoURL,

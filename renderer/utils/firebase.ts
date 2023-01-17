@@ -1,3 +1,4 @@
+import { updateProfile } from "@firebase/auth";
 import {
   collection,
   doc,
@@ -32,4 +33,15 @@ export const getUsersCollection = async email => {
   const data = await getDocs(q);
   const users = data.docs.map(doc => doc.data());
   return users;
+};
+
+export const updateUserInfo = async (user, photoURL, name) => {
+  try {
+    await updateProfile(user, {
+      photoURL,
+      displayName: name,
+    });
+  } catch (error) {
+    console.log(error);
+  }
 };
