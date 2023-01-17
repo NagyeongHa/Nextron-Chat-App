@@ -5,10 +5,11 @@ import { useAuth } from "../../context/Auth";
 import { AiFillHome } from "react-icons/ai";
 import { BsFillChatFill } from "react-icons/bs";
 import { HiChatAlt2 } from "react-icons/hi";
+import { auth } from "../../firebase";
 
 const MenuSideBar = () => {
-  const { user, logout } = useAuth();
-  const { displayName, photoURL } = user;
+  const { logout } = useAuth();
+  const user = auth.currentUser;
 
   const handleLogout = () => {
     logout();
@@ -41,18 +42,20 @@ const MenuSideBar = () => {
           </Link>
         </div>
         <div>
-          <div>
-            {photoURL && (
-              <Image
-                src={photoURL}
-                width={55}
-                height={55}
-                className='photoURL'
-                alt='propfileImage'
-              />
-            )}
-          </div>
-          <p className='font-semibold'>{displayName}</p>
+          <Link href={`/my/${[user.uid]}`}>
+            <div className='cursor-pointer'>
+              {user.photoURL && (
+                <Image
+                  src={user.photoURL}
+                  width={55}
+                  height={55}
+                  className='photoURL'
+                  alt='propfileImage'
+                />
+              )}
+            </div>
+          </Link>
+          <p className='font-semibold'>{user.displayName}</p>
           <button className='mb-6 mt-3' onClick={handleLogout}>
             logout
           </button>

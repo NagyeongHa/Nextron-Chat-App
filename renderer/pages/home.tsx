@@ -87,7 +87,7 @@ function Home() {
           userList.map(user => (
             <div
               key={user.email}
-              className='px-8 py-4  hover:bg-red-50 flex flex-row items-center'
+              className='px-10 py-4  hover:bg-red-50 flex flex-row items-center'
             >
               <input
                 type='checkbox'

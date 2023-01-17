@@ -12,8 +12,13 @@ const GroupChat = () => {
   return (
     <div>
       <Title title='그룹 채팅' />
-      {!isLoading &&
-        data.map(item => <GroupChatRoomItem key={item.date} chatList={item} />)}
+      {!isLoading && data.length ? (
+        data.map(item => <GroupChatRoomItem key={item.date} chatList={item} />)
+      ) : (
+        <div className='px-10 py-7 text-gray-400'>
+          그룹 채팅방을 만들어 보세요 : )
+        </div>
+      )}
     </div>
   );
 };

@@ -2,17 +2,10 @@ import {
   addDoc,
   collection,
   DocumentData,
-  FieldValue,
   serverTimestamp,
 } from "firebase/firestore";
 import { useRouter } from "next/router";
-import React, {
-  useEffect,
-  KeyboardEvent,
-  useState,
-  ChangeEvent,
-  useCallback,
-} from "react";
+import React, { useEffect, useState } from "react";
 import MessageList from "../../../components/message/MessageList";
 import Title from "../../../components/common/Title";
 import { callGetDoc, callSaveDoc } from "../../../utils/firebase";

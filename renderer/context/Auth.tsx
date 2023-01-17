@@ -56,12 +56,6 @@ export const AuthProvider = ({ children }: Children) => {
   };
 
   const login = async (email: string, password: string) => {
-    const newUser = auth.currentUser;
-    setUser({
-      ...user,
-      displayName: newUser.displayName,
-      photoURL: newUser.photoURL,
-    });
     return await signInWithEmailAndPassword(auth, email, password);
   };
 
@@ -69,7 +63,6 @@ export const AuthProvider = ({ children }: Children) => {
     setUser(null);
     return await signOut(auth);
   };
-  console.log(user);
 
   return (
     <AuthContext.Provider value={{ user, isLoading, signUp, login, logout }}>

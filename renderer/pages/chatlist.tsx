@@ -14,10 +14,15 @@ const ChatList = () => {
     <div>
       <Title title='채팅' />
       <div>
-        {!isLoading &&
+        {!isLoading && data.length ? (
           Object.values(data).map(item => (
             <ChatRoomItem key={item.date} chatRoom={item} />
-          ))}
+          ))
+        ) : (
+          <div className='px-10 py-7 text-gray-400'>
+            유저와 대화를 나눠보세요 : )
+          </div>
+        )}
       </div>
     </div>
   );
