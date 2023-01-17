@@ -4,12 +4,11 @@ import { Children } from "../types/Children";
 import { useAuth } from "./Auth";
 
 const AuthedRoute = ({ children }: Children) => {
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
     if (!user) {
-      logout();
       router.replace("/login");
     }
   }, [user]);

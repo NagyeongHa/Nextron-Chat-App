@@ -2,6 +2,7 @@ import {
   createUserWithEmailAndPassword,
   onAuthStateChanged,
   signInWithEmailAndPassword,
+  signOut,
   UserCredential,
 } from "firebase/auth";
 
@@ -11,7 +12,7 @@ import { Children } from "../types/Children";
 import { UserInfo } from "../types/UserInfo";
 
 interface AuthContext {
-  user: UserInfo;
+  user: UserInfo | null;
   isLoading: boolean;
   login: (email: string, password: string) => Promise<UserCredential>;
   logout: () => Promise<void>;
@@ -29,25 +30,24 @@ export const AuthProvider = ({ children }: Children) => {
   const [isLoading, setIsLoading] = useState(true);
   const [user, setUser] = useState<UserInfo>(null);
 
-  const listener = onAuthStateChanged(auth, user => {
-    try {
-      if (user) {
-        setUser({
-          uid: user.uid,
-          email: user.email,
-          photoURL: user.photoURL,
-          displayName: user.displayName,
-        });
-        return setIsLoading(false);
-      }
-      return setIsLoading(true);
-    } catch (error) {
-      console.log(error);
-    }
-  });
-
   useEffect(() => {
-    listener();
+    const listener = onAuthStateChanged(auth, user => {
+      try {
+        if (user) {
+          setUser({
+            uid: user.uid,
+            email: user.email,
+            photoURL: user.photoURL,
+            displayName: user.displayName,
+          });
+          return setIsLoading(false);
+        }
+        return setIsLoading(true);
+      } catch (error) {
+        console.log(error);
+      }
+    });
+
     return () => listener();
   }, [auth]);
 
@@ -55,15 +55,21 @@ export const AuthProvider = ({ children }: Children) => {
     return createUserWithEmailAndPassword(auth, email, password);
   };
 
-  const login = (email: string, password: string) => {
-    listener();
-    return signInWithEmailAndPassword(auth, email, password);
+  const login = async (email: string, password: string) => {
+    const newUser = auth.currentUser;
+    setUser({
+      ...user,
+      displayName: newUser.displayName,
+      photoURL: newUser.photoURL,
+    });
+    return await signInWithEmailAndPassword(auth, email, password);
   };
 
   const logout = async () => {
     setUser(null);
-    return await auth.signOut();
+    return await signOut(auth);
   };
+  console.log(user);
 
   return (
     <AuthContext.Provider value={{ user, isLoading, signUp, login, logout }}>
