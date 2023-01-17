@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import React, { FormEvent, useState } from "react";
 import InputGroup from "../components/common/TextInput";
 import { useAuth } from "../context/Auth";
+import { blankCheck, loginErrors } from "../utils/validator";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -15,12 +16,16 @@ const Login = () => {
   const handleLogin = (e: FormEvent) => {
     e.preventDefault();
 
-    if (!email.trim() || !password.trim()) {
-      return setErrors({
-        email: "",
-        password: "이메일과 비밀번호를 입력해 주세요.",
-      });
+    const emailPasswordCheck = blankCheck(
+      "이메일과 비밀번호를",
+      email,
+      password
+    );
+
+    if (!emailPasswordCheck.isvalid) {
+      return setErrors({ ...errors, password: emailPasswordCheck.error });
     }
+    setErrors({ ...errors, password: emailPasswordCheck.error });
 
     login(email, password)
       .then(() => {
@@ -28,25 +33,12 @@ const Login = () => {
       })
       .catch(error => {
         console.log(error);
-        switch (error.code) {
-          case "auth/wrong-password":
-            return setErrors({
-              email: "",
-              password: "아이디와 비밀번호가 일치하지 않습니다.",
-            });
-          case "auth/user-not-found":
-            return setErrors({
-              email: "",
-              password: "가입된 계정이 아닙니다.",
-            });
-          case "auth/invalid-email":
-            return setErrors({
-              email: "이메일 형식이 아닙니다.",
-              password: "",
-            });
-          default:
-            return setErrors({ email: "", password: "" });
+
+        const result = loginErrors(error.code);
+        if (result.type === "email") {
+          return setErrors({ password: "", email: result.error });
         }
+        return setErrors({ email: "", password: result.error });
       });
   };
 

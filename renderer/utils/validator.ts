@@ -1,5 +1,7 @@
-export const blankCheck = (type: string, value: string) => {
-  if (!value.trim()) {
+export const blankCheck = (type: string, value: string, rest?: string) => {
+  console.log("value", value, "rest", rest);
+
+  if (!value.trim() || !rest.trim()) {
     return { error: `${type} 입력해 주세요.`, isvalid: false };
   }
   return { error: "", isvalid: true };
@@ -15,5 +17,27 @@ export const signUpErrors = (error: string) => {
       return { type: "email", error: "이메일을 입력해 주세요." };
     case "auth/invalid-email":
       return { type: "email", error: "이메일 형식이 아닙니다." };
+  }
+};
+
+export const loginErrors = (error: string) => {
+  switch (error) {
+    case "auth/wrong-password":
+      return {
+        type: "password",
+        error: "아이디와 비밀번호가 일치하지 않습니다.",
+      };
+
+    case "auth/user-not-found":
+      return {
+        type: "password",
+        error: "가입된 계정이 아닙니다.",
+      };
+
+    case "auth/invalid-email":
+      return {
+        type: "email",
+        error: "이메일 형식이 아닙니다.",
+      };
   }
 };
