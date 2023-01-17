@@ -8,7 +8,7 @@ const Me = () => {
   const { displayName, photoURL, email } = user;
   return (
     <div>
-      <Title title={`${displayName} 님의 마이페이지`} />
+      <Title title={`${displayName}님의 마이페이지`} />
       <div className='flex flex-col h-[80vh] justify-center items-center p-7'>
         {photoURL && (
           <Image src={photoURL} width={70} height={70} className='photoURL' />

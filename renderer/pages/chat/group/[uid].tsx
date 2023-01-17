@@ -8,7 +8,11 @@ import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import MessageList from "../../../components/message/MessageList";
 import Title from "../../../components/common/Title";
-import { callGetDoc, callSaveDoc } from "../../../utils/firebase";
+import {
+  callGetDoc,
+  callSaveDoc,
+  deleteChatRoomList,
+} from "../../../utils/firebase";
 import { IoMdSend } from "react-icons/io";
 import { useAuth } from "../../../context/Auth";
 import { db } from "../../../firebase";
@@ -20,7 +24,6 @@ const GroupChat = () => {
   const { uid } = router.query;
   const { user } = useAuth();
 
-  // const [mixUid, setmixUid] = useState("");
   const [userNames, setUserNames] = useState("");
   const [message, setMessage] = useState("");
   const [mixUid, setMixUid] = useState("");
@@ -69,7 +72,7 @@ const GroupChat = () => {
   }, [mixUid]);
 
   //메시지 전송
-  const sendMessage = async () => {
+  const sendMessageHandler = async () => {
     //채팅목록 저장
     const ChatRoomData: GroupChatData = {
       [mixUid]: {
@@ -102,19 +105,36 @@ const GroupChat = () => {
     setMessage("");
   };
 
+  const exitChatHandler = async () => {
+    deleteChatRoomList("groupChat rooms", currentUid, mixUid);
+    //메시지 업데이트  currentid 뺘고 mixid 업데이트
+    router.replace("/groupchatlist");
+  };
+
   return (
     <div className='flex flex-col justify-start h-screen p-3'>
-      <Title title={`${userNames} (${uidList.length})`} />
+      <div className='flex felx-row items-center justify-between'>
+        <Title title={`${userNames} (${chatUser.length})`} />
+        <div className='mt-4 p-3'>
+          <button
+            onClick={exitChatHandler}
+            className='bg-gray-400 text-white rounded-3xl px-4 py-[0.5rem]'
+          >
+            채팅방 나가기
+          </button>
+        </div>
+      </div>
+
       <MessageList />
       <div className='relative'>
         <Textarea
           setValue={setMessage}
-          onKeyDown={sendMessage}
+          onKeyDown={sendMessageHandler}
           value={message}
           rows={3}
         />
         <button
-          onClick={sendMessage}
+          onClick={sendMessageHandler}
           className='absolute'
           disabled={!message.trim() ? true : false}
         >

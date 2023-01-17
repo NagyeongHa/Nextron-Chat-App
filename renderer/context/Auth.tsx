@@ -31,18 +31,13 @@ export const AuthProvider = ({ children }: Children) => {
   const [user, setUser] = useState<UserInfo>(null);
 
   useEffect(() => {
-    const listener = onAuthStateChanged(auth, user => {
+    const listener = onAuthStateChanged(auth, userData => {
       try {
-        if (user) {
-          setUser({
-            uid: user.uid,
-            email: user.email,
-            photoURL: user.photoURL,
-            displayName: user.displayName,
-          });
-          return setIsLoading(false);
+        if (userData) {
+          setUser(userData);
+          setIsLoading(false);
+          return;
         }
-        return setIsLoading(true);
       } catch (error) {
         console.log(error);
       }
@@ -63,6 +58,7 @@ export const AuthProvider = ({ children }: Children) => {
     setUser(null);
     return await signOut(auth);
   };
+  console.log(user);
 
   return (
     <AuthContext.Provider value={{ user, isLoading, signUp, login, logout }}>

@@ -5,19 +5,17 @@ import {
   serverTimestamp,
 } from "firebase/firestore";
 import { useRouter } from "next/router";
-import React, {
-  ChangeEvent,
-  KeyboardEvent,
-  useCallback,
-  useEffect,
-  useState,
-} from "react";
+import React, { useEffect, useState } from "react";
 import MessageList from "../../components/message/MessageList";
 
 import Title from "../../components/common/Title";
 import { useAuth } from "../../context/Auth";
 import { db } from "../../firebase";
-import { callGetDoc, callSaveDoc } from "../../utils/firebase";
+import {
+  callGetDoc,
+  callSaveDoc,
+  deleteChatRoomList,
+} from "../../utils/firebase";
 import { IoMdSend } from "react-icons/io";
 import { ChatRoomData } from "../../types/ChatRoom";
 import Textarea from "../../components/common/Textarea";
@@ -58,7 +56,7 @@ const Chat = () => {
   }, []);
 
   //메시지 전송
-  const sendMessage = async () => {
+  const sendMessageHandler = async () => {
     //채팅목록 저장
     const currentUserChatRoomData: ChatRoomData = {
       [chatUser.uid]: {
@@ -101,19 +99,34 @@ const Chat = () => {
     setMessage("");
   };
 
+  const exitChatHandler = async () => {
+    deleteChatRoomList("chat rooms", currentUid, chatUser.uid);
+    router.replace("/chatlist");
+  };
+
   return (
     <div className='flex flex-col justify-start h-screen p-3'>
-      <Title title={`${chatUser.displayName}`} />
+      <div className='flex felx-row items-center justify-between'>
+        <Title title={`${chatUser.displayName}`} />
+        <div className='mt-4 p-3'>
+          <button
+            onClick={exitChatHandler}
+            className='bg-gray-400 text-white rounded-3xl px-4 py-[0.5rem]'
+          >
+            채팅방 나가기
+          </button>
+        </div>
+      </div>
       <MessageList />
       <div className='relative'>
         <Textarea
           setValue={setMessage}
-          onKeyDown={sendMessage}
+          onKeyDown={sendMessageHandler}
           value={message}
           rows={3}
         />
         <button
-          onClick={sendMessage}
+          onClick={sendMessageHandler}
           className='absolute'
           disabled={!message.trim() ? true : false}
         >

@@ -1,11 +1,13 @@
 import { updateProfile } from "@firebase/auth";
 import {
   collection,
+  deleteField,
   doc,
   getDoc,
   getDocs,
   query,
   setDoc,
+  updateDoc,
   where,
 } from "firebase/firestore";
 import { db } from "../firebase";
@@ -44,4 +46,10 @@ export const updateUserInfo = async (user, photoURL, name) => {
   } catch (error) {
     console.log(error);
   }
+};
+
+export const deleteChatRoomList = async (docName, currentUid, removeField) => {
+  await updateDoc(doc(db, docName, currentUid), {
+    [`${removeField}`]: deleteField(),
+  });
 };
