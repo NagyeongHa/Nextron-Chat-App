@@ -9,6 +9,7 @@ import { useRouter } from "next/router";
 import React, { useEffect, useRef, useState } from "react";
 import { useAuth } from "../../context/Auth";
 import { db } from "../../firebase";
+import { makeMixUid } from "../../utils/firebase";
 
 import MessageItem from "./MessageItem";
 
@@ -19,15 +20,11 @@ const Messages = () => {
   const { user } = useAuth();
   const { uid } = useRouter().query;
 
-  const makeUid = String(uid).includes(",")
-    ? String(uid).replaceAll(",", "")
-    : user.uid > uid
-    ? uid + user.uid
-    : user.uid + uid;
+  const mixUid = makeMixUid(uid, user.uid, String(uid));
 
   //메시지 가져오기
   const getMessageList = async () => {
-    const messageRef = collection(db, `message-${makeUid}`);
+    const messageRef = collection(db, `message-${mixUid}`);
     const q = query(messageRef, orderBy("date", "asc"));
     onSnapshot(q, querySnapshot => {
       const message = [];

@@ -1,6 +1,4 @@
 export const blankCheck = (type: string, value: string, rest?: string) => {
-  console.log("value", value, "rest", rest);
-
   if (!value.trim() && !rest?.trim()) {
     return { error: `${type} 입력해 주세요.`, isvalid: false };
   }

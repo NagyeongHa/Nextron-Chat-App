@@ -12,6 +12,7 @@ import {
   callGetDoc,
   callSaveDoc,
   deleteChatRoomList,
+  makeMixUid,
 } from "../../../utils/firebase";
 import { IoMdSend } from "react-icons/io";
 import { useAuth } from "../../../context/Auth";
@@ -64,7 +65,8 @@ const GroupChat = () => {
   };
 
   useEffect(() => {
-    setMixUid(String(uid).replaceAll(",", ""));
+    const mixUid = makeMixUid(uid, currentUid, chatUser.uid);
+    setMixUid(mixUid);
   }, []);
 
   useEffect(() => {
@@ -105,25 +107,9 @@ const GroupChat = () => {
     setMessage("");
   };
 
-  const exitChatHandler = async () => {
-    deleteChatRoomList("groupChat rooms", currentUid, mixUid);
-    //메시지 업데이트  currentid 뺘고 mixid 업데이트
-    router.replace("/groupchatlist");
-  };
-
   return (
     <div className='flex flex-col justify-start h-screen p-3'>
-      <div className='flex felx-row items-center justify-between'>
-        <Title title={`${userNames} (${chatUser.length})`} />
-        <div className='mt-4 p-3'>
-          <button
-            onClick={exitChatHandler}
-            className='bg-gray-400 text-white rounded-3xl px-4 py-[0.5rem]'
-          >
-            채팅방 나가기
-          </button>
-        </div>
-      </div>
+      <Title title={`${userNames} (${chatUser.length})`} />
 
       <MessageList />
       <div className='relative'>

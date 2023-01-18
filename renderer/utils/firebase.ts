@@ -53,3 +53,15 @@ export const deleteChatRoomList = async (docName, currentUid, removeField) => {
     [`${removeField}`]: deleteField(),
   });
 };
+
+export const makeMixUid = (
+  routerUid: string[] | string,
+  currentUid: string,
+  restUid: string
+) => {
+  return String(routerUid).includes(",")
+    ? String(routerUid).replaceAll(",", "")
+    : currentUid > restUid
+    ? restUid + currentUid
+    : currentUid + restUid;
+};

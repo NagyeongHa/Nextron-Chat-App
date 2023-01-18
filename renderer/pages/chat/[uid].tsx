@@ -15,6 +15,7 @@ import {
   callGetDoc,
   callSaveDoc,
   deleteChatRoomList,
+  makeMixUid,
 } from "../../utils/firebase";
 import { IoMdSend } from "react-icons/io";
 import { ChatRoomData } from "../../types/ChatRoom";
@@ -39,11 +40,8 @@ const Chat = () => {
     displayName: currentDisplayName,
   } = user;
 
-  //firestore collection 이름
-  const mixUid =
-    currentUid > chatUser.uid
-      ? chatUser.uid + currentUid
-      : currentUid + chatUser.uid;
+  //메시지 저장될 collection 이름
+  const mixUid = makeMixUid(uid, currentUid, chatUser.uid);
 
   //상대방 정보 가져오기
   const getChatUser = async () => {
