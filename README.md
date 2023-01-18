@@ -129,3 +129,6 @@ $npm run dev
 **메시지**
 사용자uid와 상대방uid를 합쳐서 컬렉션을 만들고 이 컬렉션이름으로 메시지 전체를 불러옵니다.
 ![image](https://user-images.githubusercontent.com/90600892/213114309-56dea156-0994-4680-bf3b-81637081370f.png)
+
+**채팅 구현 영상**
+![2023-01-18 17;11;07](https://user-images.githubusercontent.com/90600892/213118115-2fb62fdf-dce4-4d9c-8ae5-a623f946fee1.gif)
