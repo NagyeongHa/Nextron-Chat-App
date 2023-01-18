@@ -8,12 +8,7 @@ import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import MessageList from "../../../components/message/MessageList";
 import Title from "../../../components/common/Title";
-import {
-  callGetDoc,
-  callSaveDoc,
-  deleteChatRoomList,
-  makeMixUid,
-} from "../../../utils/firebase";
+import { callGetDoc, callSaveDoc, makeMixUid } from "../../../utils/firebase";
 import { IoMdSend } from "react-icons/io";
 import { useAuth } from "../../../context/Auth";
 import { db } from "../../../firebase";

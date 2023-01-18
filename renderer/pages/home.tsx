@@ -7,6 +7,7 @@ import { getUsersCollection } from "../utils/firebase";
 import { useAuth } from "../context/Auth";
 import { BiMessageAdd } from "react-icons/bi";
 import { useRouter } from "next/router";
+import Loading from "../components/common/Loading";
 function Home() {
   const { user } = useAuth();
   const [userList, setUserList] = useState([]);
@@ -55,9 +56,6 @@ function Home() {
   };
   return (
     <div>
-      <Head>
-        <title></title>
-      </Head>
       <div className='flex flex-row justify-between items-center'>
         <Title title={`유저 목록 (${userList.length})`} />
         <div className='flex flex-row items-center'>
@@ -86,7 +84,7 @@ function Home() {
         </div>
       </div>
       <div className='h-full'>
-        {!isLoading &&
+        {!isLoading ? (
           userList.map(user => (
             <div
               key={user.email}
@@ -113,7 +111,10 @@ function Home() {
                 </div>
               </Link>
             </div>
-          ))}
+          ))
+        ) : (
+          <Loading />
+        )}
       </div>
     </div>
   );

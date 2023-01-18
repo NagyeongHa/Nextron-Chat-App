@@ -10,6 +10,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useAuth } from "../../context/Auth";
 import { db } from "../../firebase";
 import { makeMixUid } from "../../utils/firebase";
+import Loading from "../common/Loading";
 
 import MessageItem from "./MessageItem";
 
@@ -53,10 +54,13 @@ const Messages = () => {
 
   return (
     <div className='overflow-y-scroll h-full' ref={messageBoxRef}>
-      {!isLoading &&
+      {!isLoading ? (
         Object.values(messageList).map(item => (
           <MessageItem key={item.date} messages={item} />
-        ))}
+        ))
+      ) : (
+        <Loading />
+      )}
     </div>
   );
 };

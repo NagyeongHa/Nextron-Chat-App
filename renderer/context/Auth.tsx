@@ -3,21 +3,14 @@ import {
   onAuthStateChanged,
   signInWithEmailAndPassword,
   signOut,
-  UserCredential,
 } from "firebase/auth";
 
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { auth } from "../firebase";
+import { AuthContext } from "../types/AuthContext";
 import { Children } from "../types/Children";
 import { UserInfo } from "../types/UserInfo";
 
-interface AuthContext {
-  user: UserInfo | null;
-  isLoading: boolean;
-  login: (email: string, password: string) => Promise<UserCredential>;
-  logout: () => Promise<void>;
-  signUp: (email: string, password: string) => Promise<UserCredential>;
-}
 const AuthContext = createContext<AuthContext>({
   user: null,
   isLoading: true,
@@ -58,7 +51,6 @@ export const AuthProvider = ({ children }: Children) => {
     setUser(null);
     return await signOut(auth);
   };
-  console.log(user);
 
   return (
     <AuthContext.Provider value={{ user, isLoading, signUp, login, logout }}>
