@@ -1,4 +1,4 @@
-## 마음연구소 프론트 테스트
+## Chat App
 
 ---
 
@@ -118,30 +118,6 @@ $npm run dev
 - **유저 페이지**
 
   자신의 이름, 이메일, 프로필등을 확인합니다.
-
----
-
-## 파이어베이스 구조
-
-**유저 목록**
-
-회원가입 후 생성된 유저정보를 저장합니다.
-![image](https://user-images.githubusercontent.com/90600892/213112069-3d3e1dfa-e540-4440-a32a-f8e9969a433f.png)
-
-**개인 채팅 목록**
-
-개인uid로 사용자의 모든 개인 채팅 목록을 가져옵니다.
-![image](https://user-images.githubusercontent.com/90600892/213113771-b49661a4-24ab-4acc-9840-bd9746ac8355.png)
-
-**그룹 채팅 목록**
-
-개인 uid로 그룹 채팅 목록을 가져옵니다.
-![image](https://user-images.githubusercontent.com/90600892/213114034-4ea3da28-0f40-4692-a94c-e4389bf4b97b.png)
-
-**메시지**
-
-사용자uid와 상대방uid를 합쳐서 컬렉션을 만들고 이 컬렉션이름으로 메시지 전체를 불러옵니다.
-![image](https://user-images.githubusercontent.com/90600892/213114309-56dea156-0994-4680-bf3b-81637081370f.png)
 
 ---
 
