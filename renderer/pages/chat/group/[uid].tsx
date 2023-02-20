@@ -51,6 +51,10 @@ const GroupChat = () => {
     setChatUser(users);
   };
 
+  useEffect(() => {
+    getChatUsers();
+  }, [mixUid]);
+
   const getUserName = () => {
     if (chatUser.length) {
       const names = chatUser.map(user => user.displayName);
@@ -60,13 +64,10 @@ const GroupChat = () => {
   };
 
   useEffect(() => {
-    const mixUid = makeMixUid(uid, currentUid, chatUser.uid);
+    const mixUid = uidList.join("");
     setMixUid(mixUid);
   }, []);
-
-  useEffect(() => {
-    getChatUsers();
-  }, [mixUid]);
+  console.log(currentUid);
 
   //메시지 전송
   const sendMessageHandler = async () => {
@@ -80,12 +81,12 @@ const GroupChat = () => {
     };
 
     const saveRestUserChatRoom = async () => {
-      await chatUser.map(user =>
-        callSaveDoc("groupChat rooms", user.uid, ChatRoomData)
-      );
+      await chatUser.map(user => {
+        callSaveDoc("groupChat rooms", user.uid, ChatRoomData);
+        console.log(user.uid);
+      });
     };
 
-    await callSaveDoc("groupChat rooms", currentUid, ChatRoomData);
     saveRestUserChatRoom();
 
     //메시지 저장

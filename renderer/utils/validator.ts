@@ -1,5 +1,5 @@
-export const blankCheck = (type: string, value: string, rest?: string) => {
-  if (!value.trim() && !rest?.trim()) {
+export const blankCheck = (type: string, value: string) => {
+  if (!value.trim()) {
     return { error: `${type} 입력해 주세요.`, isvalid: false };
   }
   return { error: "", isvalid: true };

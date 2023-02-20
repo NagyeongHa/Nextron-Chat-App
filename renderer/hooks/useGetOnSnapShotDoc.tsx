@@ -1,13 +1,40 @@
-import { doc, DocumentData, onSnapshot } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  DocumentData,
+  onSnapshot,
+  query,
+  QueryOrderByConstraint,
+} from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { db } from "../firebase";
 
-const useGetOnSnapShotDoc = (collection: string, uid: string) => {
+const useGetOnSnapShotDoc = (
+  collectionName: string,
+  requirement: QueryOrderByConstraint | string
+) => {
   const [data, setData] = useState<DocumentData>([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  const getChatRoomCollection = async () => {
-    await onSnapshot(doc(db, collection, uid), doc => {
+  const getCollection = async () => {
+    console.log(typeof requirement);
+
+    //쿼리를 이용한 조회
+    if (typeof requirement !== "string") {
+      const queryString = query(collection(db, collectionName), requirement);
+      await onSnapshot(queryString, querySnapshot => {
+        const data = [];
+        querySnapshot.forEach(doc => {
+          data.push(doc.data());
+        });
+
+        setData(data);
+        setIsLoading(false);
+      });
+      return;
+    }
+
+    await onSnapshot(doc(db, collectionName, requirement), doc => {
       const result = doc.data();
 
       if (result) {
@@ -21,7 +48,7 @@ const useGetOnSnapShotDoc = (collection: string, uid: string) => {
   };
 
   useEffect(() => {
-    getChatRoomCollection();
+    getCollection();
   }, []);
 
   return { data, isLoading };

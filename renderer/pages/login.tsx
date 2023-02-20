@@ -8,7 +8,8 @@ import { blankCheck, loginErrors } from "../utils/validator";
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [errors, setErrors] = useState({ email: "", password: "" });
+  const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
 
   const router = useRouter();
   const { login } = useAuth();
@@ -16,16 +17,13 @@ const Login = () => {
   const handleLogin = (e: FormEvent) => {
     e.preventDefault();
 
-    const emailPasswordCheck = blankCheck(
-      "이메일과 비밀번호를",
-      email,
-      password
-    );
+    const emailCheck = blankCheck("이메일을", email);
+    if (!emailCheck.isvalid) return setEmailError(emailCheck.error);
+    setEmailError(emailCheck.error);
 
-    if (!emailPasswordCheck.isvalid) {
-      return setErrors({ ...errors, password: emailPasswordCheck.error });
-    }
-    setErrors({ ...errors, password: emailPasswordCheck.error });
+    const passwordCheck = blankCheck("비밀번호를", password);
+    if (!passwordCheck.isvalid) return setPasswordError(passwordCheck.error);
+    setPasswordError(passwordCheck.error);
 
     login(email, password)
       .then(() => {
@@ -36,9 +34,9 @@ const Login = () => {
 
         const result = loginErrors(error.code);
         if (result.type === "email") {
-          return setErrors({ password: "", email: result.error });
+          return setEmailError(result.error);
         }
-        return setErrors({ email: "", password: result.error });
+        return setPasswordError(result.error);
       });
   };
 
@@ -52,7 +50,7 @@ const Login = () => {
             placeholder='아이디'
             value={email}
             setValue={setEmail}
-            error={errors.email}
+            error={emailError}
             className='roundedInput'
           />
         </div>
@@ -62,7 +60,7 @@ const Login = () => {
             placeholder='비밀번호'
             value={password}
             setValue={setPassword}
-            error={errors.password}
+            error={passwordError}
             className='roundedInput'
           />
         </div>
