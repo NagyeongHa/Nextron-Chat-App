@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import Head from "next/head";
 import Title from "../components/common/Title";
 import Image from "next/image";
 import Link from "next/link";
@@ -16,7 +15,6 @@ function Home() {
   const [checkedUserList, setCheckedUserList] = useState([]);
   const router = useRouter();
 
-  //유저목록 가져오기
   const getUsers = async () => {
     const users = await getUsersCollection(user.email);
     setUserList(users);
@@ -46,8 +44,8 @@ function Home() {
     const sortUid = addCurrentUid.sort();
 
     checkedUserList.length && checkedUserList.length === 1
-      ? router.push(`/chat/${checkedUserList.join("")}`)
-      : router.push(`/chat/group/${sortUid}`);
+      ? router.push(`/chat/${checkedUserList}`)
+      : router.push(`/chat/${sortUid}`);
   };
 
   const cancelHandler = () => {

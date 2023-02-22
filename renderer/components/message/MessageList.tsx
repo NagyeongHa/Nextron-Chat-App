@@ -14,8 +14,8 @@ const Messages = () => {
   const { uid } = useRouter().query;
 
   const mixUid = makeMixUid(uid, user.uid, String(uid));
-  const q = orderBy("date", "asc");
-  const { data, isLoading } = useGetOnSnapShotDoc(`message-${mixUid}`, q);
+  const query = orderBy("date", "asc");
+  const { data, isLoading } = useGetOnSnapShotDoc(`message-${mixUid}`, query);
 
   useEffect(() => {
     const scrollToBottom = () => {

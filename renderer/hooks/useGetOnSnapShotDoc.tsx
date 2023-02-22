@@ -17,8 +17,6 @@ const useGetOnSnapShotDoc = (
   const [isLoading, setIsLoading] = useState(true);
 
   const getCollection = async () => {
-    console.log(typeof requirement);
-
     //쿼리를 이용한 조회
     if (typeof requirement !== "string") {
       const queryString = query(collection(db, collectionName), requirement);

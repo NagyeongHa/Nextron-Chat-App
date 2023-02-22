@@ -7,6 +7,7 @@ import useGetOnSnapShotDoc from "../hooks/useGetOnSnapShotDoc";
 const GroupChat = () => {
   const { user } = useAuth();
   const { uid } = user;
+
   const { data, isLoading } = useGetOnSnapShotDoc("groupChat rooms", uid);
 
   return (

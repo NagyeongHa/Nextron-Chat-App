@@ -6,6 +6,7 @@ import {
   getDoc,
   getDocs,
   query,
+  serverTimestamp,
   setDoc,
   updateDoc,
   where,
@@ -48,10 +49,37 @@ export const updateUserInfo = async (user, photoURL, name) => {
   }
 };
 
-export const deleteChatRoomList = async (docName, currentUid, removeField) => {
-  await updateDoc(doc(db, docName, currentUid), {
+export const callRemoveDoc = async (
+  collectionName,
+  currentUid,
+  removeField
+) => {
+  await updateDoc(doc(db, collectionName, currentUid), {
     [`${removeField}`]: deleteField(),
   });
+};
+
+//채팅방 데이터 생성 함수
+export const createChatRoomData = (userInfo, value, mixUid?) => {
+  const data = {
+    [mixUid ?? userInfo.uid]: {
+      user: userInfo,
+      date: serverTimestamp(),
+      lastMessage: value,
+    },
+  };
+  return data;
+};
+
+//메시지 데이터 생성 함수
+export const createMessageData = (userInfo, value) => {
+  const data = {
+    displayName: userInfo.displayName,
+    photoURL: userInfo.photoURL,
+    date: serverTimestamp(),
+    message: value,
+  };
+  return data;
 };
 
 export const makeMixUid = (

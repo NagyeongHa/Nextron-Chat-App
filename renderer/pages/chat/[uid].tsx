@@ -1,9 +1,4 @@
-import {
-  addDoc,
-  collection,
-  DocumentData,
-  serverTimestamp,
-} from "firebase/firestore";
+import { addDoc, collection, DocumentData } from "firebase/firestore";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import MessageList from "../../components/message/MessageList";
@@ -13,12 +8,13 @@ import { useAuth } from "../../context/Auth";
 import { db } from "../../firebase";
 import {
   callGetDoc,
+  callRemoveDoc,
   callSaveDoc,
-  deleteChatRoomList,
+  createChatRoomData,
+  createMessageData,
   makeMixUid,
 } from "../../utils/firebase";
-import { IoMdSend } from "react-icons/io";
-import { ChatRoomData } from "../../types/ChatRoom";
+import { ChatRoomData, GroupChatData } from "../../types/ChatRoom";
 import Textarea from "../../components/common/Textarea";
 
 const Chat = () => {
@@ -34,19 +30,40 @@ const Chat = () => {
     photoURL: "",
   });
 
-  const {
-    uid: currentUid,
-    photoURL: currentPhotoURL,
-    displayName: currentDisplayName,
-  } = user;
+  const currentUser = {
+    uid: user.uid,
+    email: user.email,
+    photoURL: user.photoURL,
+    displayName: user.displayName,
+  };
 
-  //메시지 저장될 collection 이름
-  const mixUid = makeMixUid(uid, currentUid, chatUser.uid);
+  const isGroupChat = () => {
+    if (uid.includes(",")) {
+      return true;
+    }
+    return false;
+  };
 
-  //상대방 정보 가져오기
+  const uidList = isGroupChat() ? String(uid).split(",") : String(uid);
+  const mixUid = makeMixUid(uid, user.uid, chatUser.uid);
+
   const getChatUser = async () => {
-    const user = await callGetDoc("users", String(uid));
-    setChatUser(user);
+    if (typeof uidList === "string") {
+      const data = await callGetDoc("users", uidList);
+      setChatUser(data);
+      return;
+    }
+
+    const users = [];
+
+    await Promise.all(
+      uidList.map(async uid => {
+        const data = await callGetDoc("users", uid);
+        users.push(data);
+      })
+    );
+
+    setChatUser(users);
   };
 
   useEffect(() => {
@@ -55,57 +72,74 @@ const Chat = () => {
 
   //메시지 전송
   const sendMessageHandler = async () => {
-    //채팅목록 저장
-    const currentUserChatRoomData: ChatRoomData = {
-      [chatUser.uid]: {
-        user: {
-          uid: chatUser.uid,
-          displayName: chatUser.displayName,
-          photoURL: chatUser.photoURL,
-        },
-        date: serverTimestamp(),
-        lastMessage: message,
-      },
-    };
+    try {
+      const messageRef = collection(db, `message-${mixUid}`);
 
-    const restUserChatRoomData: ChatRoomData = {
-      [currentUid]: {
-        user: {
-          uid: currentUid,
-          displayName: currentDisplayName,
-          photoURL: currentPhotoURL,
-        },
-        date: serverTimestamp(),
-        lastMessage: message,
-      },
-    };
+      //개인채팅
+      if (!isGroupChat()) {
+        const userChatRoomData: ChatRoomData = createChatRoomData(
+          chatUser,
+          message
+        );
+        const restUserChatRoomData: ChatRoomData = createChatRoomData(
+          currentUser,
+          message
+        );
 
-    await callSaveDoc("chat rooms", currentUid, currentUserChatRoomData);
-    await callSaveDoc("chat rooms", chatUser.uid, restUserChatRoomData);
+        //채팅목록 저장
+        await callSaveDoc("chat rooms", currentUser.uid, userChatRoomData);
+        await callSaveDoc("chat rooms", chatUser.uid, restUserChatRoomData);
 
-    //메시지 저장
-    const chatMessageData = {
-      displayName: currentDisplayName,
-      photoURL: currentPhotoURL,
-      date: serverTimestamp(),
-      message: message,
-    };
+        //메시지 저장
+        const messageData = createMessageData(currentUser, message);
+        await addDoc(messageRef, messageData);
 
-    const chatMessageRef = collection(db, `message-${mixUid}`);
-    await addDoc(chatMessageRef, chatMessageData);
+        return;
+      }
 
-    setMessage("");
+      //그룹채팅
+      const groupChatRoomData: GroupChatData = createChatRoomData(
+        chatUser,
+        message,
+        mixUid
+      );
+
+      //채팅목록 저장
+      await chatUser.map(user => {
+        callSaveDoc("groupChat rooms", user.uid, groupChatRoomData);
+      });
+
+      //메시지 저장
+      const groupChatMessageData = createMessageData(currentUser, message);
+      await addDoc(messageRef, groupChatMessageData);
+    } catch (error) {
+      console.log("error :", error);
+    } finally {
+      setMessage("");
+    }
   };
 
   const exitChatHandler = async () => {
-    deleteChatRoomList("chat rooms", currentUid, chatUser.uid);
-    router.replace("/chatlist");
+    const collectionName = isGroupChat() ? "groupChat rooms" : "chat rooms";
+    const removeField = isGroupChat() ? mixUid : chatUser.uid;
+
+    callRemoveDoc(collectionName, currentUser.uid, removeField);
+    router.back();
   };
 
   return (
     <div className='flex flex-col justify-start h-screen p-3'>
       <div className='flex felx-row items-center justify-between'>
-        <Title title={`${chatUser.displayName}`} />
+        <Title
+          title={`${
+            !isGroupChat()
+              ? chatUser.displayName + " (2)"
+              : Object.values(chatUser)
+                  .filter(item => item.displayName !== currentUser.displayName)
+                  .map(item => item.displayName)
+                  .join(", ") + ` (${chatUser.length})`
+          } `}
+        />
         <div className='mt-4 p-3'>
           <button
             onClick={exitChatHandler}
@@ -116,26 +150,12 @@ const Chat = () => {
         </div>
       </div>
       <MessageList />
-      <div className='relative'>
-        <Textarea
-          setValue={setMessage}
-          onKeyDown={sendMessageHandler}
-          value={message}
-          rows={3}
-        />
-        <button
-          onClick={sendMessageHandler}
-          className='absolute'
-          disabled={!message.trim() ? true : false}
-        >
-          <IoMdSend
-            size={28}
-            className={`messageSendIcon ${
-              !message.trim() ? "text-gray-200" : "text-gray-400"
-            }`}
-          />
-        </button>
-      </div>
+      <Textarea
+        setValue={setMessage}
+        sendHandler={sendMessageHandler}
+        value={message}
+        rows={3}
+      />
     </div>
   );
 };

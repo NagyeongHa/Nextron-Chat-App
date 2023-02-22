@@ -33,6 +33,8 @@ const Login = () => {
         console.log(error);
 
         const result = loginErrors(error.code);
+        console.log(result);
+
         if (result.type === "email") {
           return setEmailError(result.error);
         }
