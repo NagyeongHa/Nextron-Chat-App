@@ -2,6 +2,14 @@
 
 ---
 
+## 실행 방법
+
+```
+./renderer/.envtest 파일명 .env 로 변경 후
+$ npm install
+$ npm run dev
+```
+
 ## 폴더 구조
 
 ```
